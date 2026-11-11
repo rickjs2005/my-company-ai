@@ -33,7 +33,7 @@ export function Sidebar(props: SidebarProps) {
   return (
     <nav className="hq-sidebar" aria-label="Salas e sessões">
       <div className="hq-sidebar__brand">
-        <span className="pixel hq-sidebar__logo">MilWeb HQ</span>
+        <span className="pixel hq-sidebar__logo">My Company AI</span>
         <span className={cx('hq-conn', connected ? 'hq-conn--on' : 'hq-conn--off')} title={connected ? 'Conectado ao servidor local' : 'Sem conexão com o servidor'}>
           <span className="hq-conn__dot" />{connected ? 'conectado' : 'desconectado'}
         </span>

@@ -16,7 +16,7 @@ import type { ProviderTurnStop, TurnHandle, TurnOutcome } from '../ai/types.js';
 import { formatBrt } from '../time.js';
 import { buildContextPackage, buildSystemPrompt, buildTurnText, parseMentions, parseSynthesis, PHASE_LABELS, renderMinutes, chefeDecisionText } from './prompts.js';
 import { isDistributeCommand, parsePlan, planBrief, planTaskText, renderPlanSection } from './plan.js';
-import { SOCIAL_SLOTS } from '@milweb-hq/protocol';
+import { configuredCompanyName, PRODUCT_NAME, SOCIAL_SLOTS } from '@milweb-hq/protocol';
 import type { MeetingPlan, PlanTaskRecord, TaskRunInput, TaskRunResult } from '@milweb-hq/protocol';
 
 /** O que a reunião precisa do gerenciador de sessões (tipado pela forma para os testes usarem um falso). */
@@ -91,7 +91,7 @@ export class MeetingController {
     const ms = this.deps.meetings;
     this.purgeTrash();
     for (const t of ms.listTurnsByStatus(['running'])) {
-      ms.updateTurn(t.id, { status: 'lost', finishedAt: Date.now(), error: 'O serviço da MilWeb HQ reiniciou durante este turno. Nada foi reenviado: use "Tentar de novo" se quiser.' });
+      ms.updateTurn(t.id, { status: 'lost', finishedAt: Date.now(), error: 'O serviço do My Company AI reiniciou durante este turno. Nada foi reenviado: use "Tentar de novo" se quiser.' });
       const m = ms.getMeeting(t.meetingId);
       const p = m?.participants.find(x => x.id === t.participantId);
       if (m) this.notice(m.id, `O serviço reiniciou durante o turno de ${p?.name ?? 'um participante'} (${PHASE_LABELS[t.phase]}). O turno ficou marcado como perdido; nada foi reenviado.`);
@@ -508,7 +508,7 @@ export class MeetingController {
     const room = this.deps.store.listRooms().find(r => r.kind === 'meeting') ?? null;
     const messages = ms.listMessages(m.id); const decisions = ms.listDecisions(m.id); const context = ms.listContext(m.id);
     const fileContents = this.readContextFiles(context);
-    const company = m.companyContext ? { rooms: this.deps.store.listRooms(), projects: this.deps.store.listProjects(), employees: this.deps.store.listEmployees() } : null;
+    const company = m.companyContext ? { name: configuredCompanyName(this.deps.store.getSettings()), rooms: this.deps.store.listRooms(), projects: this.deps.store.listProjects(), employees: this.deps.store.listEmployees() } : null;
     const contextPackage = buildContextPackage({ meeting: m, project, messages, decisions, context, fileContents, company, employees: this.deps.store.listEmployees() });
     const chefeMessage = [...messages].reverse().find(x => x.kind === 'chefe') ?? null;
     const brief = turn.phase === 'plan' ? planBrief({
@@ -517,7 +517,7 @@ export class MeetingController {
       partialFrom: [...new Set(messages.filter(x => x.kind === 'speech' && x.partial).map(x => x.authorName))], defaultProjectId: m.projectId,
     }) : undefined;
     const text = buildTurnText({ phase: turn.phase, round: turn.round, roundLimit: m.roundLimit, me: p, chefeMessage, contextPackage, others: m.participants.filter(x => x.kind === 'ai' && x.id !== p.id), planBrief: brief });
-    const systemPrompt = buildSystemPrompt(m, p, employee, room);
+    const systemPrompt = buildSystemPrompt(m, p, employee, room, configuredCompanyName(this.deps.store.getSettings()));
     const cwd = this.cwdFor(m, project);
 
     const requested: AiProviderPrefs = { model: cfg.model, effort: cfg.effort };
@@ -963,7 +963,7 @@ export class MeetingController {
       if (!employee || employee.archivedAt || !project) throw new Error(`o funcionário ou o projeto de "${cur.title}" mudou durante a criação; as tarefas seguintes não foram criadas`);
       let session: Session | null = employee.activeSessionId ? this.deps.store.getSession(employee.activeSessionId) : null;
       if (!session || session.status === 'archived' || session.projectId !== project.id) session = this.deps.manager.createSession({ roomId: employee.roomId, projectId: project.id, employeeId: employee.id, name: `${project.name} · reunião: ${m.title}`.slice(0, 120) });
-      const text = `[Tarefa criada na reunião "${m.title}" da MilWeb HQ]\n${cur.title}\n\n${instructions}`;
+      const text = `[Tarefa criada na reunião "${m.title}" do My Company AI]\n${cur.title}\n\n${instructions}`;
       const task = await this.deps.manager.sendPrompt({ sessionId: session.id, clientId: `meeting:${m.id}:task:${cur.id}`, text, mode: 'queue', held: !step.start, meetingId: m.id });
       const saved = ms.upsertTaskItem({ id: cur.id, meetingId: m.id, title: cur.title, instructions, employeeId: employee.id, roomId: employee.roomId, projectId: project.id, status: 'created', taskId: task.id, sessionId: session.id });
       this.deps.broadcast({ kind: 'meeting.taskItem', meetingId: m.id, op: 'upsert', item: saved });
@@ -1008,7 +1008,7 @@ export class MeetingController {
 
   private notice(meetingId: string, text: string, clientId: string | null = null): MeetingMessage {
     const m = this.deps.meetings.getMeeting(meetingId);
-    const message = this.deps.meetings.addMessage({ meetingId, turnId: null, participantId: SYSTEM_PARTICIPANT, authorName: 'MilWeb HQ', provider: null, kind: 'notice', text, round: m?.currentRound || null, phase: null, targets: [], config: null, contextVersion: m?.contextVersion ?? 1, partial: false, clientId });
+    const message = this.deps.meetings.addMessage({ meetingId, turnId: null, participantId: SYSTEM_PARTICIPANT, authorName: PRODUCT_NAME, provider: null, kind: 'notice', text, round: m?.currentRound || null, phase: null, targets: [], config: null, contextVersion: m?.contextVersion ?? 1, partial: false, clientId });
     this.deps.broadcast({ kind: 'meeting.message', meetingId, message });
     return message;
   }
@@ -1032,7 +1032,7 @@ export class MeetingController {
     const root = roots.find(r => { const n = norm(r); return target === n || target.startsWith(n + '/'); });
     if (!root) return 'o arquivo não está em nenhum projeto ou pasta cadastrada na HQ';
     const data = norm(this.deps.dataDir);
-    if (target === data || target.startsWith(data + '/')) return 'caminho protegido (dados da MilWeb HQ)';
+    if (target === data || target.startsWith(data + '/')) return 'caminho protegido (dados do My Company AI)';
     const segs = path.relative(path.resolve(root), path.resolve(p)).split(/[\\/]+/).filter(Boolean);
     let cur = path.resolve(root);
     for (const seg of segs) {

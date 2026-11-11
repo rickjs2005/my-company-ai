@@ -1,4 +1,4 @@
-// Trabalho diário na MilWeb HQ (v4): entrada única de tarefa, catálogo de skills, agentes nativos descobertos,
+// Trabalho diário no My Company AI (v4): entrada única de tarefa, catálogo de skills, agentes nativos descobertos,
 // rotinas, serviço em segundo plano, modo ausente e resumo de ausência. Tudo descreve estado REAL verificado pelo
 // servidor; "skill solicitada" e "ativação confirmada" são registradas separadamente, com a evidência observada.
 import type { AiProviderId, EffortLevel } from './ai.js';

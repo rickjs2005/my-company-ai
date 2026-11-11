@@ -263,7 +263,7 @@ export class ClaudeProcess extends EventEmitter<ClaudeProcessEvents> {
         } else {
           // Diálogos e outros pedidos não suportados: responder erro para o CLI não ficar esperando para sempre.
           try {
-            this.writeLine({ type: 'control_response', response: { subtype: 'error', request_id: requestId, error: `MilWeb HQ não suporta ${String(request.subtype)}` } });
+            this.writeLine({ type: 'control_response', response: { subtype: 'error', request_id: requestId, error: `My Company AI não suporta ${String(request.subtype)}` } });
           } catch { /* processo fechando */ }
         }
         break;

@@ -1,6 +1,6 @@
 # Manual da agência: como a sala Social Media trabalha
 
-A MilWeb HQ é uma agência de verdade com funcionários que são agentes de IA. O Chefe é o CEO: define objetivos, escolhe
+O My Company AI é uma agência de verdade com funcionários que são agentes de IA. O Chefe é o CEO: define objetivos, escolhe
 prioridades, manda referências, aprova e avalia. **Ele não distribui tarefa pequena.** Quem transforma o pedido dele em
 trabalho é a gerência, e a HQ toca a linha de produção sozinha, com tarefas reais e arquivos conferidos no disco.
 

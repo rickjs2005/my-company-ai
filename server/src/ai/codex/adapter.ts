@@ -11,7 +11,7 @@ import { CodexClient, type ServerRequest } from './client.js';
 import { locateCodex, type CodexInstall } from './locate.js';
 
 export const CODEX_LATEST_KNOWN_VERSION = '0.166.0'; // npm em 31/10/2026; só informativo, a HQ nunca atualiza nada.
-const CLIENT_INFO = { name: 'milweb-hq', title: 'MilWeb HQ', version: '0.3.0' };
+const CLIENT_INFO = { name: 'milweb-hq', title: 'My Company AI', version: '0.3.0' };
 const DEFAULT_TURN_TIMEOUT_MS = 10 * 60_000;
 const DEFAULT_INTERRUPT_GRACE_MS = 5000;
 const NO_LOGIN_DETAIL = 'ChatGPT sem login no Codex. Use o botão "Entrar com ChatGPT" (abre o login oficial no navegador) ou rode `codex login` no terminal.';
@@ -249,7 +249,7 @@ export class CodexAdapter extends EventEmitter<AiAdapterEvents> implements AiAda
       this.log(`codex pediu aprovação (${req.method}); negada`);
       client.respond(req.id, { decision: 'decline' });
     } else {
-      client.respondError(req.id, -32601, `MilWeb HQ não atende ${req.method}`);
+      client.respondError(req.id, -32601, `My Company AI não atende ${req.method}`);
     }
   }
 
@@ -562,7 +562,7 @@ export class CodexAdapter extends EventEmitter<AiAdapterEvents> implements AiAda
     if (!logged) return finish({ ok: false, model, effort, resolvedModel: null, detail: NO_LOGIN_DETAIL, durationMs: null });
     const handle = this.startTurn({
       meetingId: 'teste', turnId: `teste-${at}`, participantId: 'teste', threadId: null, cwd,
-      systemPrompt: 'Você está respondendo a um teste de conexão da MilWeb HQ. Responda só com a palavra pedida.',
+      systemPrompt: 'Você está respondendo a um teste de conexão do My Company AI. Responda só com a palavra pedida.',
       text: TEST_PROMPT, title: 'Teste de conexão', model, effort, timeoutMs: 2 * 60_000,
     });
     const o = await handle.done;

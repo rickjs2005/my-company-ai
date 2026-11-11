@@ -25,7 +25,7 @@ export function createHttpServer(cfg: Config, health: () => Record<string, unkno
     }
     if (!cfg.webDist) {
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-      res.end('<!doctype html><meta charset="utf-8"><title>MilWeb HQ</title><body style="font-family:sans-serif;background:#121014;color:#ece6dc;padding:40px"><h1>MilWeb HQ</h1><p>O frontend ainda não foi compilado (<code>pnpm --filter @milweb-hq/web build</code>). Em desenvolvimento, abra o Vite em <a href="http://127.0.0.1:5173" style="color:#f0a830">http://127.0.0.1:5173</a>.</p></body>');
+      res.end('<!doctype html><meta charset="utf-8"><title>My Company AI</title><body style="font-family:sans-serif;background:#121014;color:#ece6dc;padding:40px"><h1>My Company AI</h1><p>O frontend ainda não foi compilado (<code>pnpm --filter @milweb-hq/web build</code>). Em desenvolvimento, abra o Vite em <a href="http://127.0.0.1:5173" style="color:#f0a830">http://127.0.0.1:5173</a>.</p></body>');
       return;
     }
     let rel = decodeURIComponent(url.pathname);

@@ -22,3 +22,20 @@
 .hq-terminal-note code { font-family: var(--font-mono); background: var(--bg-input); padding: 6px 8px; border-radius: 6px; color: var(--text); display: block; user-select: all; }
 
 .hq-reconnect { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); z-index: 3; background: rgba(227, 106, 90, 0.16); color: var(--danger); border: 1px solid rgba(227, 106, 90, 0.5); padding: 6px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600; }
+
+/* Nome da empresa: tela do primeiro acesso (cobre o escritório até o servidor gravar o nome) e campo de Ajustes → Empresa. */
+.hq-company { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: 24px; background: var(--bg); overflow: auto; }
+.hq-company__card { width: 100%; max-width: 460px; display: flex; flex-direction: column; gap: 10px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 30px 32px; box-shadow: var(--shadow); }
+.hq-company__product { color: var(--amber); font-size: 10px; }
+.hq-company__card h1 { font-size: 22px; line-height: 1.25; margin: 6px 0 0; color: var(--text); }
+.hq-company__help { margin: 0 0 8px; color: var(--text-dim); }
+.hq-company__note { margin: 0 0 8px; padding: 8px 10px; border-radius: 8px; background: var(--bg-input); color: var(--text-dim); font-size: 12.5px; }
+.hq-company__input { font-size: 16px; padding: 10px 12px; }
+.hq-company__status { min-height: 18px; font-size: 12.5px; }
+.hq-company__error { color: var(--danger); }
+.hq-company__ok { color: var(--ok, var(--text-dim)); }
+.hq-company__go { align-self: flex-start; padding: 9px 16px; font-size: 14px; }
+.hq-company__foot { margin: 4px 0 0; font-size: 11.5px; color: var(--text-faint); }
+.hq-company-panel { display: flex; flex-direction: column; gap: 6px; }
+.hq-company-panel__row { display: flex; gap: 8px; }
+.hq-company-panel__row .hq-input { flex: 1; min-width: 0; }

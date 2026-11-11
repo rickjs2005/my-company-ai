@@ -1,4 +1,4 @@
-// Lançador da MilWeb HQ (v4). Sobe o serviço em SEGUNDO PLANO, sem janela e desacoplado deste processo, espera ele responder
+// Lançador do My Company AI (v4). Sobe o serviço em SEGUNDO PLANO, sem janela e desacoplado deste processo, espera ele responder
 // e (com --open) abre o navegador. Depois sai: a janela do start-hq.cmd pode ser fechada e o serviço continua.
 // JavaScript puro (sem tsx) para começar na hora; é também o que a tarefa agendada "Iniciar com o Windows" chama (--scheduled).
 // Uso: node launch.mjs [--open] [--scheduled] [--port N] [--data PASTA]
@@ -19,7 +19,7 @@ const wantOpen = argv.includes('--open');
 const port = Number(arg('--port') ?? process.env.MILWEB_HQ_PORT ?? 4777);
 const dataDir = path.resolve(arg('--data') ?? process.env.MILWEB_HQ_DATA ?? path.join(process.env.LOCALAPPDATA ?? os.homedir(), 'MilWebHQ'));
 const logsDir = path.join(dataDir, 'logs');
-const say = (m) => console.log(`[MilWeb HQ] ${m}`);
+const say = (m) => console.log(`[My Company AI] ${m}`);
 
 async function health() {
   try {
@@ -59,7 +59,7 @@ async function main() {
   const deadline = Date.now() + 120_000;
   while (Date.now() < deadline) {
     if (exited !== null) {
-      say(exited === 2 ? `a porta ${port} está ocupada por outro programa (não é uma MilWeb HQ). Feche-o ou use outra porta (set MILWEB_HQ_PORT=4790).` : `o serviço terminou com código ${exited}. Veja ${logsDir}.`);
+      say(exited === 2 ? `a porta ${port} está ocupada por outro programa (não é um My Company AI). Feche-o ou use outra porta (set MILWEB_HQ_PORT=4790).` : `o serviço terminou com código ${exited}. Veja ${logsDir}.`);
       return exited || 1;
     }
     const h = await health();

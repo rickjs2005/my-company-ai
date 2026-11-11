@@ -26,7 +26,7 @@ export async function attachEdgeExtension(workspaceDir: string, token: string | 
   if (token) process.env.PLAYWRIGHT_MCP_EXTENSION_TOKEN = token; else delete process.env.PLAYWRIGHT_MCP_EXTENSION_TOKEN;
   const core = createRequire(import.meta.url)('playwright-core/lib/coreBundle') as { tools: { createBrowserWithInfo(config: unknown, client: unknown, cli: unknown, bind: unknown): Promise<{ browser: Browser }> } };
   const config = { extension: true, browser: { browserName: 'chromium', isolated: false, launchOptions: { channel: 'msedge', headless: false }, contextOptions: {} }, timeouts: {} };
-  const info = await core.tools.createBrowserWithInfo(config, { clientName: 'MilWeb HQ' }, { browser: 'msedge' }, { title: 'MilWeb HQ', workspaceDir });
+  const info = await core.tools.createBrowserWithInfo(config, { clientName: 'My Company AI' }, { browser: 'msedge' }, { title: 'My Company AI', workspaceDir });
   return info.browser;
 }
 const CAP_KEYS: BrowserCapKey[] = ['pesquisar', 'ler_metricas', 'preparar', 'publicar', 'agendar'];

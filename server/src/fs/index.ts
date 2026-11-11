@@ -64,7 +64,7 @@ export function createFsService(deps: FsServiceDeps): FsService {
       throw new FsError('access_denied', `não foi possível abrir ${p}: ${e.message}`);
     }
     if (!st.isDirectory()) throw new FsError('invalid_name', `não é uma pasta: ${p}`);
-    if (roots.isInsideHq(p)) throw new FsError('protected', `esta pasta pertence à própria MilWeb HQ (dados ou instalação): ${p}`);
+    if (roots.isInsideHq(p)) throw new FsError('protected', `esta pasta pertence ao próprio My Company AI (dados ou instalação): ${p}`);
     for (const r of roots.list()) {
       const rp = path.resolve(r.path);
       if (isInside(rp, p) && isInside(p, rp)) throw new FsError('exists', `esta pasta já está cadastrada como "${r.name}"`);

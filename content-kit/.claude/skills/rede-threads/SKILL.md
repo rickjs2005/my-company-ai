@@ -1,6 +1,6 @@
 ---
 name: rede-threads
-description: Especialidade Threads da sala Social Media da MilWeb HQ. Usar para preparar posts de conversa e relacionamento (bastidores, perguntas com contexto) para a conta do Threads, na voz da marca à qual a conta pertence. Entrega peca.md + entrega.json. Não publica nem responde ninguém.
+description: Especialidade Threads da sala Social Media do My Company AI. Usar para preparar posts de conversa e relacionamento (bastidores, perguntas com contexto) para a conta do Threads, na voz da marca à qual a conta pertence. Entrega peca.md + entrega.json. Não publica nem responde ninguém.
 ---
 
 # Threads

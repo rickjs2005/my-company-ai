@@ -1,4 +1,4 @@
-/* Casca v2 da MilWeb HQ: cabeçalho discreto, navegação compacta, palco, painel recolhível, barra de chat, vistas. */
+/* Casca v2 do My Company AI: cabeçalho discreto, navegação compacta, palco, painel recolhível, barra de chat, vistas. */
 
 .hq-app { min-width: 1024px; }
 /* Navegação na altura toda; à direita, a área de trabalho (palco + painel) com o compositor embaixo. Antes o compositor
@@ -15,6 +15,7 @@
 .hq-top { height: 42px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 14px 0 12px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #fff6ea 0%, var(--bg-panel) 100%); font-size: 12.5px; }
 .hq-top__brand { display: flex; align-items: center; }
 .hq-top__logo { color: var(--amber); font-size: 10px; text-shadow: 0 2px 0 rgba(240, 168, 48, 0.25); }
+.hq-top__company { color: var(--amber); font-size: 14px; font-weight: 700; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
 .hq-top__context { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .hq-top__project { background: none; border: 1px solid transparent; border-radius: 6px; padding: 3px 8px; color: var(--text); display: inline-flex; gap: 6px; align-items: center; max-width: 360px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hq-top__project:hover { border-color: var(--border); background: var(--bg-elev); }

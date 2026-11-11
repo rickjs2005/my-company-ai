@@ -10,8 +10,9 @@ import { MODEL_OPTIONS, PERMISSION_MODE_LABELS, PERMISSION_MODE_OPTIONS, cleanCl
 import { AiSettingsPanel, aiSettingsProblems, sameAiSettings } from '../../settings/index';
 import { Field, Modal } from './Modal';
 import { DataPanel } from '../../settings/DataPanel';
+import { CompanyPanel } from '../../shell/CompanySetup';
 
-type SettingsTab = 'general' | 'ai' | 'data';
+type SettingsTab = 'general' | 'company' | 'ai' | 'data';
 
 const samePrefs = (a: AiSettings['claude'], b: AiSettings['claude']) => a.model === b.model && a.effort === b.effort;
 
@@ -67,6 +68,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
       <form onSubmit={submit} className="hq-form">
         <div className="hq-tabs hq-settings__tabs" role="tablist">
           <button type="button" role="tab" aria-selected={tab === 'general'} className={`hq-tab${tab === 'general' ? ' hq-tab--on' : ''}`} onClick={() => setTab('general')}>Geral</button>
+          {props.onCompanyName && <button type="button" role="tab" aria-selected={tab === 'company'} className={`hq-tab${tab === 'company' ? ' hq-tab--on' : ''}`} onClick={() => setTab('company')}>Empresa</button>}
           <button type="button" role="tab" aria-selected={tab === 'ai'} className={`hq-tab${tab === 'ai' ? ' hq-tab--on' : ''}`} onClick={() => setTab('ai')}>
             Conexões{aiProblems.length > 0 && <span className="hq-tab__badge" aria-label="há um problema nesta aba">!</span>}
           </button>
@@ -74,6 +76,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </div>
 
         {tab === 'data' && props.onDataInfo && <DataPanel load={props.onDataInfo} backupNow={props.onBackupNow} />}
+        {tab === 'company' && props.onCompanyName && <CompanyPanel current={settings.companyName ?? null} onSave={props.onCompanyName} />}
 
         {tab === 'general' && (
           <>

@@ -125,7 +125,7 @@ const PRIORITY_LABEL: Record<PlanPriority, string> = { alta: 'alta', media: 'mé
 export function planTaskText(i: { spec: PlanTaskSpec; meetingTitle: string; planVersion: number; employee: Employee; project: Project; slotLabel: string | null; depTitles: string[] }): string {
   const t = i.spec;
   return [
-    `[Tarefa distribuída na reunião "${i.meetingTitle}" da MilWeb HQ · plano v${i.planVersion} · item ${t.key}]`,
+    `[Tarefa distribuída na reunião "${i.meetingTitle}" do My Company AI · plano v${i.planVersion} · item ${t.key}]`,
     t.title,
     '',
     `Objetivo: ${t.objective || t.title}`,

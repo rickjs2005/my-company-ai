@@ -1,5 +1,6 @@
 // Montagem dos textos enviados aos participantes de IA e leitura das respostas estruturadas. Só texto público:
 // pauta, contexto da reunião, falas de todos e quadro. Nada de raciocínio privado de um modelo vai para o outro.
+import { companyDisplayName, companyForAgents } from '@milweb-hq/protocol';
 import type { Employee, Meeting, MeetingContextItem, MeetingDecision, MeetingMessage, MeetingParticipant, Project, Room, TurnPhase } from '@milweb-hq/protocol';
 
 export const PHASE_LABELS: Record<TurnPhase, string> = { reply: 'resposta', opinion: 'opinião inicial', revision: 'revisão', synthesis: 'síntese', plan: 'plano consolidado' };
@@ -12,19 +13,21 @@ export function participantLabel(p: MeetingParticipant, employees?: Employee[]):
   return `${p.name}${role ? `, ${role}` : ''} (${PROVIDER_ROUTE[p.provider ?? ''] ?? p.provider ?? 'IA'})`;
 }
 
-export function buildSystemPrompt(meeting: Meeting, me: MeetingParticipant, employee: Employee | null, room: Room | null): string {
+export function buildSystemPrompt(meeting: Meeting, me: MeetingParticipant, employee: Employee | null, room: Room | null, companyName: string | null = null): string {
+  const company = companyForAgents({ companyName });
+  const short = companyName ?? 'empresa';
   const others = meeting.participants.filter(p => p.id !== me.id).map(p => participantLabel(p)).join(', ');
   const crowd = meeting.participants.filter(p => p.kind === 'ai').length > 2;
   const parts = [
-    `Você é ${me.name}, participante de uma reunião da MilWeb HQ, a empresa virtual do Chefe (fundador da Aurora, agência de sites e sistemas). Os outros participantes são: ${others || 'ninguém'}. Quem decide é o Chefe; você opina, discorda quando tiver motivo e aponta riscos. Concordância entre modelos não é aprovação de nada.`,
+    `Você é ${me.name}, participante de uma reunião de ${company}. Os outros participantes são: ${others || 'ninguém'}. Quem decide é o Chefe; você opina, discorda quando tiver motivo e aponta riscos. Concordância entre modelos não é aprovação de nada.`,
     'Regras: responda em português do Brasil, de forma direta e organizada, sem rodeios e sem repetir o que já foi dito. Você está em modo análise: não execute comandos, não altere arquivos e não finja ter feito algo. Se precisar ler um arquivo do projeto para opinar, pode ler. Se não souber, diga que não sabe. Nunca invente dados da empresa.',
     'Formato: texto corrido com no máximo alguns parágrafos ou uma lista curta. Comece cada fala pelo ponto principal. Quando quiser propor algo para o quadro, use linhas começando com "Proposta:", "Divergência:", "Pergunta:" ou "Ação:".',
   ];
   if (crowd) parts.push('A mesa tem vários participantes: fale do ponto de vista da sua função, seja breve e não repita o que outro participante já disse; se concordar, diga em uma linha e acrescente só o que for novo.');
   if (employee) {
     parts.push(me.employeeId === employee.id && me.name.startsWith(employee.name)
-      ? `Você está à mesa como ${employee.name}${employee.role ? ` (${employee.role})` : ''}, da equipe da MilWeb HQ.`
-      : `Nesta reunião você representa o funcionário ${employee.name}${employee.role ? ` (${employee.role})` : ''} da MilWeb HQ.`);
+      ? `Você está à mesa como ${employee.name}${employee.role ? ` (${employee.role})` : ''}, da equipe da ${short}.`
+      : `Nesta reunião você representa o funcionário ${employee.name}${employee.role ? ` (${employee.role})` : ''} da ${short}.`);
     if (employee.instructions?.trim()) parts.push(`Instruções de atuação de ${employee.name}:\n${employee.instructions.trim()}`);
   }
   if (room?.instructions?.trim()) parts.push(`Instruções da sala de Reuniões:\n${room.instructions.trim()}`);
@@ -39,7 +42,7 @@ export interface ContextPackageInput {
   context: MeetingContextItem[];
   /** Conteúdo lido no servidor para os itens de contexto de arquivo (por id). */
   fileContents: Map<string, { text: string; truncated: boolean; error?: string }>;
-  company: { rooms: Room[]; projects: Project[]; employees: Employee[] } | null;
+  company: { name?: string | null; rooms: Room[]; projects: Project[]; employees: Employee[] } | null;
   /** Para mostrar a função de cada funcionário à mesa. */
   employees?: Employee[];
 }
@@ -60,7 +63,7 @@ export function buildContextPackage(input: ContextPackageInput): string {
     const rooms = c.rooms.map(r => `- ${r.name}`).join('\n');
     const projects = c.projects.slice(0, 40).map(p => `- ${p.name} (${p.path})`).join('\n');
     const emps = c.employees.filter(e => !e.archivedAt).map(e => `- ${e.name}${e.role ? `, ${e.role}` : ''} (sala ${c.rooms.find(r => r.id === e.roomId)?.name ?? '?'})`).join('\n');
-    out.push(`## Contexto da empresa (MilWeb HQ)\nSalas:\n${rooms || '-'}\n\nProjetos cadastrados:\n${projects || '-'}\n\nFuncionários:\n${emps || '- nenhum'}`);
+    out.push(`## Contexto da empresa (${companyDisplayName({ companyName: c.name ?? null })})\nSalas:\n${rooms || '-'}\n\nProjetos cadastrados:\n${projects || '-'}\n\nFuncionários:\n${emps || '- nenhum'}`);
   }
   const ctx = input.context.filter(c => c.enabled);
   if (ctx.length) {

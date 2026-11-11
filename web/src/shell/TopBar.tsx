@@ -1,6 +1,7 @@
-// Cabeçalho discreto: MilWeb HQ, sala atual (navegador de salas), perfil editorial, ÚNICO indicador de conexão, busca e ajustes.
+// Cabeçalho discreto: My Company AI, sala atual (navegador de salas), perfil editorial, ÚNICO indicador de conexão, busca e ajustes.
 import { useEffect, useRef } from 'react';
 import type { Project, Room, ServerInfo } from '@milweb-hq/protocol';
+import { PRODUCT_NAME } from '@milweb-hq/protocol';
 import type { ConnectionState } from '../state/client';
 import { cleanClaudeVersion, formatClock } from '../panel/helpers';
 import { IconSettings } from '../panel/icons';
@@ -8,6 +9,8 @@ import { IconSettings } from '../panel/icons';
 export interface RoomNavItem { id: string; label: string; hint?: string; color?: string; on?: boolean }
 
 export interface TopBarProps {
+  /** Nome da empresa (Ajustes → Empresa); sem nome escolhido, o do produto. */
+  companyName?: string;
   connection: ConnectionState;
   lastSnapshotAt: number | null;
   serverInfo: ServerInfo | null;
@@ -74,11 +77,13 @@ function RoomMenu({ nav }: { nav: NonNullable<TopBarProps['roomNav']> }) {
   );
 }
 
-export function TopBar({ connection, lastSnapshotAt, serverInfo, room, project, onReconnect, onOpenProjects, onOpenDirection, absence, onOpenAbsence, onOpenSearch, roomNav, profiles, profileId, onProfile, onOpenSettings, social, onOpenSocial, desk, onOpenDesk }: TopBarProps) {
+export function TopBar({ companyName, connection, lastSnapshotAt, serverInfo, room, project, onReconnect, onOpenProjects, onOpenDirection, absence, onOpenAbsence, onOpenSearch, roomNav, profiles, profileId, onProfile, onOpenSettings, social, onOpenSocial, desk, onOpenDesk }: TopBarProps) {
   const on = connection === 'open';
   return (
     <header className="hq-top" role="banner">
-      <div className="hq-top__brand"><span className="pixel hq-top__logo">MilWeb HQ</span></div>
+      <div className="hq-top__brand" title={companyName && companyName !== PRODUCT_NAME ? `${companyName} · ${PRODUCT_NAME}` : PRODUCT_NAME}>
+        {companyName && companyName !== PRODUCT_NAME ? <strong className="hq-top__company">{companyName}</strong> : <span className="pixel hq-top__logo">{PRODUCT_NAME}</span>}
+      </div>
       <div className="hq-top__context">
         {roomNav ? <RoomMenu nav={roomNav} /> : (
           <>

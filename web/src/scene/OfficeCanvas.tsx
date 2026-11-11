@@ -130,7 +130,7 @@ export function OfficeCanvas(props: OfficeCanvasProps) {
 
   return (
     <div ref={hostRef} className={className} style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', background: '#121014', ...style }}>
-      <canvas ref={canvasRef} aria-label="Escritório da MilWeb HQ" role="img" style={{ display: 'block', position: 'absolute', inset: 0 }} />
+      <canvas ref={canvasRef} aria-label="Escritório do My Company AI" role="img" style={{ display: 'block', position: 'absolute', inset: 0 }} />
     </div>
   );
 }

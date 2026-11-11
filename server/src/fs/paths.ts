@@ -107,8 +107,8 @@ export class Roots {
     if (!this.isProtected(abs, level)) return;
     const [data] = this.protectedDirs();
     const msg = isInside(data, abs)
-      ? `caminho protegido (dados da MilWeb HQ): ${rel || '(raiz)'}`
-      : `a pasta da MilWeb HQ é só leitura no explorador (o serviço roda dali); altere esses arquivos pelo editor ou por um funcionário: ${rel || '(raiz)'}`;
+      ? `caminho protegido (dados do My Company AI): ${rel || '(raiz)'}`
+      : `a pasta do My Company AI é só leitura no explorador (o serviço roda dali); altere esses arquivos pelo editor ou por um funcionário: ${rel || '(raiz)'}`;
     throw new FsError('protected', msg, rel);
   }
 

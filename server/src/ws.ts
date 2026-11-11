@@ -288,7 +288,18 @@ export function attachWs(server: http.Server, deps: WsDeps): { broadcast: (m: Se
         if (!deps.preview) throw new Error('a prévia local não está disponível neste serviço');
         reply(msg.reqId, await deps.preview.urlFor(projectOf(msg.projectId))); return;
       }
-      case 'settings.update': { const s = store.saveSettings(msg.patch); broadcast({ kind: 'settings', settings: s }); deps.ai?.onSettingsChanged(); manager.dispatch(); return; }
+      case 'settings.update': {
+        // O nome da empresa só entra por company.setName (validado); aqui ele é ignorado.
+        const { companyName: _companyName, ...patch } = msg.patch ?? {};
+        const s = store.saveSettings(patch); broadcast({ kind: 'settings', settings: s }); deps.ai?.onSettingsChanged(); manager.dispatch(); return;
+      }
+      case 'company.setName': {
+        // Primeiro acesso e Ajustes → Empresa. Só responde depois de gravar no SQLite; repetir o mesmo nome não muda nada.
+        const before = store.getSettings().companyName;
+        const s = store.setCompanyName(msg.name);
+        if (s.companyName !== before) { log.info(`nome da empresa ${before ? 'alterado' : 'definido'}`); broadcast({ kind: 'settings', settings: s }); }
+        reply(msg.reqId, { companyName: s.companyName }); return;
+      }
       case 'external.refresh': { await deps.external.refresh(); sendTo(ws, { kind: 'snapshot', snapshot: snapshot() }); return; }
       case 'open.external': openExternal(msg.target, msg.value); return;
       case 'file.view': reply(msg.reqId, await viewFile(msg.path, deps.preview)); return;

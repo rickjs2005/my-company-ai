@@ -1,6 +1,6 @@
 ---
 name: rede-x
-description: Especialidade X (conta nova em inglês, por Tuco Dev) da sala Social Media da MilWeb HQ. Usar para notas curtas em inglês sobre notícias verificadas de tecnologia, ferramentas dev, atualizações e alertas de segurança, sempre confirmadas na origem, com tradução em português para o Chefe revisar. Entrega peca.md + entrega.json. Não publica.
+description: Especialidade X (conta nova em inglês, por Tuco Dev) da sala Social Media do My Company AI. Usar para notas curtas em inglês sobre notícias verificadas de tecnologia, ferramentas dev, atualizações e alertas de segurança, sempre confirmadas na origem, com tradução em português para o Chefe revisar. Entrega peca.md + entrega.json. Não publica.
 ---
 
 # X (inglês)

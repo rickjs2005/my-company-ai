@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Serviço local da MilWeb HQ: loopback + token, SQLite, WebSocket, controle dos processos reais do Claude Code",
+  "description": "Serviço local do My Company AI: loopback + token, SQLite, WebSocket, controle dos processos reais do Claude Code",
   "scripts": {
     "dev": "node --import tsx --watch src/main.ts",
     "start": "node --import tsx src/main.ts",

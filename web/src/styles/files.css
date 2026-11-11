@@ -1,4 +1,4 @@
-/* Explorador de arquivos e lixeira da MilWeb HQ. Usa os tokens de base.css. Prefixo hq-fx-. */
+/* Explorador de arquivos e lixeira do My Company AI. Usa os tokens de base.css. Prefixo hq-fx-. */
 
 .hq-fx { position: relative; display: flex; flex-direction: column; height: 100%; min-height: 0; background: var(--bg); color: var(--text); font-size: 13px; }
 .hq-fx--empty { align-items: center; justify-content: center; }

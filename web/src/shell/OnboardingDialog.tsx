@@ -6,6 +6,8 @@ import { Modal } from '../panel/dialogs/Modal';
 import { IconCheck } from '../panel/icons';
 
 export interface OnboardingDialogProps {
+  /** Nome da empresa escolhido no primeiro acesso (aparece no título). */
+  companyName?: string;
   open: boolean;
   ai: AiProviderStatus[];
   projects: Project[];
@@ -37,7 +39,7 @@ export function OnboardingDialog(props: OnboardingDialogProps) {
     { key: 'employee', title: 'Contratar o primeiro funcionário', detail: done.employee ? `${props.employees.filter(e => !e.archivedAt).length} funcionário(s) na empresa.` : 'Um perfil persistente (nome, função, sala, provedor). Contratar não inicia nenhum processo.', action: 'Contratar funcionário', run: props.onHire },
   ];
   return (
-    <Modal open={props.open} title="Bem-vindo à MilWeb HQ" onCancel={props.onLater} width={560}>
+    <Modal open={props.open} title={props.companyName ? `${props.companyName}: primeiros passos` : 'Primeiros passos'} onCancel={props.onLater} width={560}>
       <p className="hq-dim" style={{ marginTop: 0 }}>Três passos para a empresa funcionar. O andamento abaixo vem do estado real da HQ; cada botão abre a tela certa sem perder o que você já escreveu.</p>
       <ol className="hq-onboard">
         {steps.map((s, i) => (

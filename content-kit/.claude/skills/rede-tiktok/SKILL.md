@@ -1,6 +1,6 @@
 ---
 name: rede-tiktok
-description: Especialidade TikTok da sala Social Media da MilWeb HQ. Usar para produzir vídeo curto pronto (video.json que a HQ renderiza em MP4) ou carrossel de fotos para o TikTok do Tuco Dev (demonstrações, humor dev, explicações visuais). Entrega a peça pronta para postar, com a legenda. Não publica.
+description: Especialidade TikTok da sala Social Media do My Company AI. Usar para produzir vídeo curto pronto (video.json que a HQ renderiza em MP4) ou carrossel de fotos para o TikTok do Tuco Dev (demonstrações, humor dev, explicações visuais). Entrega a peça pronta para postar, com a legenda. Não publica.
 ---
 
 # TikTok (Tuco Dev)

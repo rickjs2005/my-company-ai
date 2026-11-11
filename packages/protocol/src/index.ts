@@ -1,4 +1,4 @@
-// Contrato compartilhado entre servidor e frontend da MilWeb HQ.
+// Contrato compartilhado entre servidor e frontend do My Company AI.
 // Tudo aqui descreve estado REAL (processos, sessões, eventos do Claude Code). Nada decorativo entra neste contrato.
 
 // Importações só de tipos (apagadas na compilação): o frontend nunca carrega process.ts (node:child_process).
@@ -356,6 +356,8 @@ export interface Settings {
   lastSeenAt: number | null;
   /** Onboarding de primeiro uso concluído/dispensado. */
   onboardingDone: boolean;
+  /** Nome da empresa escolhido no primeiro acesso (Ajustes → Empresa). null = ainda não escolhido. Grava só por company.setName. */
+  companyName: string | null;
 }
 
 export interface FileNode { name: string; path: string; type: 'file' | 'dir'; size?: number; mtime?: number; children?: FileNode[] }
@@ -410,6 +412,8 @@ export type ClientMessage =
   /** Marco 1: URL da prévia local do projeto (servidor da HQ em outra origem, só leitura). */
   | { type: 'preview.local'; reqId: string; projectId: string }
   | { type: 'settings.update'; patch: Partial<Settings> }
+  /** Nome da empresa (primeiro acesso e Ajustes → Empresa): validado no servidor; a resposta traz o nome gravado. */
+  | { type: 'company.setName'; reqId: string; name: string }
   | { type: 'external.refresh' }
   /** Abre fora da HQ: pasta no Explorador, arquivo no programa padrão do Windows, arquivo selecionado na pasta (reveal) ou URL. */
   | { type: 'open.external'; target: 'folder' | 'file' | 'reveal' | 'url'; value: string }
@@ -498,7 +502,7 @@ export type ServerMessage =
 /** Modelos de papel padrão (editáveis em Ajustes). As skills citadas só valem se existirem no catálogo da máquina. */
 export const DEFAULT_ROLE_TEMPLATES: RoleTemplate[] = [
   { id: 'dev', name: 'Desenvolvedor(a)', role: 'Desenvolvimento', roomKind: 'dev', permissionMode: 'default', preferredSkills: ['sistema-web', 'site-institucional', 'seo-engineering', 'humanizar-site'],
-    instructions: 'Você desenvolve sites, landing pages e sistemas da Aurora. Entregue código funcionando, rode os testes que existirem e diga como abrir o resultado localmente. Não faça commit, push ou deploy sem pedido explícito.' },
+    instructions: 'Você desenvolve sites, landing pages e sistemas da empresa. Entregue código funcionando, rode os testes que existirem e diga como abrir o resultado localmente. Não faça commit, push ou deploy sem pedido explícito.' },
   { id: 'social', name: 'Social media', role: 'Social Media', roomKind: 'social', permissionMode: 'acceptEdits', preferredSkills: ['social', 'milweb-video-studio'],
     instructions: 'Você produz pautas, roteiros, legendas e carrosséis. Salve cada entrega como arquivo Markdown na pasta do projeto, com nome descritivo e data. Nunca publique nada.' },
   { id: 'design', name: 'Designer', role: 'Design e Vídeo', roomKind: 'design', permissionMode: 'acceptEdits', preferredSkills: ['milweb-video-studio'],
@@ -524,7 +528,9 @@ export const DEFAULT_SETTINGS: Settings = {
   roleTemplates: DEFAULT_ROLE_TEMPLATES,
   lastSeenAt: null,
   onboardingDone: false,
+  companyName: null,
 };
 
 export const PROTOCOL_VERSION = 4;
 export * from './teams.js';
+export * from './company.js';

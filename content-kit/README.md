@@ -1,6 +1,6 @@
 # Conteúdos Aurora e Tuco Dev
 
-Pasta de trabalho da sala Social Media da MilWeb HQ. A HQ criou a estrutura; os arquivos antigos do Chefe continuam onde
+Pasta de trabalho da sala Social Media do My Company AI. A HQ criou a estrutura; os arquivos antigos do Chefe continuam onde
 estavam (o inventário com os caminhos originais fica em `referencias/originais.md`, e nada foi movido).
 
 | Pasta | O que guarda |

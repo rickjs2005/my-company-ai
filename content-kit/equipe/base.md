@@ -1,4 +1,4 @@
-# Base da equipe de conteúdo (MilWeb HQ)
+# Base da equipe de conteúdo (My Company AI)
 
 Vale para os sete funcionários da sala Social Media (Equipe Tuco Dev: Nina na criação e Teo no vídeo; Equipe Aurora:
 Bia na criação e Clara no vídeo; Caio na pesquisa, Marina na pauta e Otto na revisão atendem as duas) e para as seis

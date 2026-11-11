@@ -88,4 +88,4 @@ export interface AiAdapter extends EventEmitter<AiAdapterEvents> {
 }
 
 /** Prompt de teste padrão: avisa o provedor de que é um teste de conexão. */
-export const TEST_PROMPT = 'Isto é um teste de conexão da MilWeb HQ (não é uma tarefa). Responda apenas com a palavra: ok';
+export const TEST_PROMPT = 'Isto é um teste de conexão do My Company AI (não é uma tarefa). Responda apenas com a palavra: ok';

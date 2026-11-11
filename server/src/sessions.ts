@@ -10,7 +10,7 @@ import { randomUUID } from 'node:crypto';
 import { ClaudeProcess, DELEGATE_TOOLS, EXEC_TOOLS, WRITE_TOOLS, initialActivity, reduceActivity, summarizeToolInput } from '@milweb-hq/claude-bridge';
 import type { ActivityState, ContentBlock, InitInfo, PermissionRequest, PermissionResult, PermissionUpdate, RawEvent, ResultInfo } from '@milweb-hq/claude-bridge';
 import type { AbsencePolicy, AiProviderId, Attachment, AwaySummary, ChatItem, Deliverable, EffortLevel, Employee, PendingPermission, PermissionModeOption, Project, QuestionSpec, Room, ServerMessage, Session, SkillInfo, SkillUsage, Task, TaskEvidence, TaskRunInput, TaskRunResult, Worker, WorkerPhase, WorkerStatus } from '@milweb-hq/protocol';
-import { DM_SESSION_NAME, isDmSession, isSocialSlot } from '@milweb-hq/protocol';
+import { companyForAgents, DM_SESSION_NAME, isDmSession, isSocialSlot } from '@milweb-hq/protocol';
 import type { ProviderCaps, Store } from './store.js';
 import type { AiAdapter, TurnHandle, TurnOutcome } from './ai/types.js';
 import { childEnv } from './claude-info.js';
@@ -279,7 +279,7 @@ export class SessionManager extends EventEmitter<{ broadcast: [ServerMessage]; t
     }
     // Tarefas que estavam rodando: conferir antes de repetir se algo pode ter mudado; senão, nova tentativa até o limite.
     for (const t of this.store.listTasksByStatus(['running', 'waiting_permission', 'waiting_answer'])) {
-      this.recoverInterruptedTask(t, 'O serviço da MilWeb HQ reiniciou enquanto esta tarefa rodava; o processo não existe mais.', settings.maxAttempts);
+      this.recoverInterruptedTask(t, 'O serviço do My Company AI reiniciou enquanto esta tarefa rodava; o processo não existe mais.', settings.maxAttempts);
     }
     // Fila durável (v4): tarefas na fila sobrevivem ao reinício e seguem na ordem de criação; as "em espera" continuam esperando.
     const queued = this.store.listTasksByStatus(['queued']).filter(t => !t.held);
@@ -540,7 +540,7 @@ export class SessionManager extends EventEmitter<{ broadcast: [ServerMessage]; t
   async steer(input: { sessionId: string; clientId: string; text: string }): Promise<{ delivered: boolean; task: Task | null }> {
     const s = this.store.getSession(input.sessionId);
     if (!s) throw new Error('sessão não encontrada');
-    if (!s.controllable) throw new Error('esta sessão é apenas observada; abra-a na MilWeb HQ para controlar');
+    if (!s.controllable) throw new Error('esta sessão é apenas observada; abra-a no My Company AI para controlar');
     if (s.status === 'archived') throw new Error('sessão arquivada');
     const text = input.text.trim();
     if (!text) throw new Error('mensagem vazia');
@@ -564,7 +564,7 @@ export class SessionManager extends EventEmitter<{ broadcast: [ServerMessage]; t
     if (existing) return existing; // reenvio (ex.: atualização da página, duplo clique, reconexão): nunca dispara de novo
     const s = this.store.getSession(input.sessionId);
     if (!s) throw new Error('sessão não encontrada');
-    if (!s.controllable) throw new Error('esta sessão é apenas observada; abra-a na MilWeb HQ para controlar');
+    if (!s.controllable) throw new Error('esta sessão é apenas observada; abra-a no My Company AI para controlar');
     if (s.status === 'archived') throw new Error('sessão arquivada');
     if (!input.text.trim() && !(input.attachments?.length) && !(input.storedAttachments?.length)) throw new Error('mensagem vazia');
     const attachments = input.storedAttachments ?? this.storeAttachments(input.attachments ?? [], input.maxAttachments ?? 10).map(a => a.meta);
@@ -1226,9 +1226,11 @@ export class SessionManager extends EventEmitter<{ broadcast: [ServerMessage]; t
 
   private systemPromptFor(room: Room | null, project: Project, s: Session): string {
     const e = s.employeeId ? this.store.getEmployee(s.employeeId) : null;
-    const who = e ? `Você é ${e.name}${e.role ? ` (${e.role})` : ''}, funcionário da MilWeb HQ` : 'Você está trabalhando dentro da MilWeb HQ';
+    // Empresa operadora: o nome escolhido no primeiro acesso (Ajustes → Empresa). Perfil editorial e equipe vêm depois, separados.
+    const company = companyForAgents(this.store.getSettings());
+    const who = e ? `Você é ${e.name}${e.role ? ` (${e.role})` : ''} e trabalha para ${company}` : `Você trabalha para ${company}`;
     const parts = [
-      `${who}, a empresa virtual do Chefe (fundador da Aurora). Sala: ${room?.name ?? 'sem sala'}. Projeto: ${project.name} (pasta ${project.path}). Trabalhe somente nessa pasta, salvo pedido explícito. Responda em português do Brasil, de forma direta.`,
+      `${who}. Quem dirige a empresa e decide é o Chefe. Sala: ${room?.name ?? 'sem sala'}. Projeto: ${project.name} (pasta ${project.path}). Trabalhe somente nessa pasta, salvo pedido explícito. Responda em português do Brasil, de forma direta.`,
     ];
     if (e?.instructions?.trim()) parts.push(`Instruções de atuação de ${e.name}:\n${e.instructions.trim()}`);
     if (room?.instructions?.trim()) parts.push(`Instruções da sala:\n${room.instructions.trim()}`);
@@ -1432,7 +1434,7 @@ export class SessionManager extends EventEmitter<{ broadcast: [ServerMessage]; t
     const p = this.procs.get(sessionId); const r = this.runtime(sessionId);
     const pending = r.pending.get(requestId);
     if (!p?.alive || !pending) throw new Error('pedido de permissão não está mais pendente');
-    const result: PermissionResult = behavior === 'allow' ? { behavior: 'allow', ...(remember?.length ? { updatedPermissions: remember } : {}) } : { behavior: 'deny', message: message?.trim() || 'Negado pelo Chefe na MilWeb HQ.' };
+    const result: PermissionResult = behavior === 'allow' ? { behavior: 'allow', ...(remember?.length ? { updatedPermissions: remember } : {}) } : { behavior: 'deny', message: message?.trim() || 'Negado pelo Chefe no My Company AI.' };
     p.respondPermission(requestId, result);
     this.finishPending(sessionId, requestId, behavior, message);
   }
@@ -1667,7 +1669,7 @@ export class SessionManager extends EventEmitter<{ broadcast: [ServerMessage]; t
 
 /** Como o funcionário age na conversa particular: responde ao Chefe e, quando ele pede trabalho, devolve o pedido para a gerente. */
 const DM_RULES = [
-  'Esta é a sua conversa particular com o Chefe (CEO da Aurora), só entre vocês dois: nada daqui vai para o mural nem para a equipe. Responda como você, curto e direto, como numa conversa.',
+  'Esta é a sua conversa particular com o Chefe (quem dirige a empresa), só entre vocês dois: nada daqui vai para o mural nem para a equipe. Responda como você, curto e direto, como numa conversa.',
   'Você pode ler os arquivos da pasta para responder (Glob, Grep, Read), mas não produza peça nem altere arquivo aqui.',
   'Se o Chefe pedir um trabalho (peça, vídeo, pesquisa, estudo, mudança), confirme em uma frase o que entendeu e termine a resposta com este bloco, que a HQ manda para a gerente da sala planejar e distribuir:',
   '```pedido-hq\n{"pedido": "o pedido do Chefe completo, com as palavras dele e o que você entendeu"}\n```',

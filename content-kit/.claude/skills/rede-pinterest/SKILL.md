@@ -1,6 +1,6 @@
 ---
 name: rede-pinterest
-description: Especialidade Pinterest da sala Social Media da MilWeb HQ. Usar para Pins estáticos que levam interessados aos projetos da Aurora - composição com capturas reais de desktop e mobile, título descritivo, descrição coerente, pasta sugerida e URL real do projeto. Entrega pin.html + peca.md + entrega.json; a HQ renderiza pin.png. Não publica.
+description: Especialidade Pinterest da sala Social Media do My Company AI. Usar para Pins estáticos que levam interessados aos projetos da Aurora - composição com capturas reais de desktop e mobile, título descritivo, descrição coerente, pasta sugerida e URL real do projeto. Entrega pin.html + peca.md + entrega.json; a HQ renderiza pin.png. Não publica.
 ---
 
 # Pinterest

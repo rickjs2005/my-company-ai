@@ -2,7 +2,7 @@
 import { randomUUID } from 'node:crypto';
 import type { DatabaseSync } from 'node:sqlite';
 import type { AiProviderId, AuditEntry, ChatItem, Deliverable, EffortLevel, Employee, EmployeeAccess, Folder, LogEntry, Project, Room, Routine, RoutineInput, Session, Settings, SkillUsage, Task } from '@milweb-hq/protocol';
-import { DEFAULT_ABSENCE, DEFAULT_AI_SETTINGS, DEFAULT_ROLE_TEMPLATES, DEFAULT_SETTINGS } from '@milweb-hq/protocol';
+import { checkCompanyName, DEFAULT_ABSENCE, DEFAULT_AI_SETTINGS, DEFAULT_ROLE_TEMPLATES, DEFAULT_SETTINGS } from '@milweb-hq/protocol';
 import { initialActivity } from '@milweb-hq/claude-bridge';
 import { normalizeAccess } from './access.js';
 
@@ -12,23 +12,23 @@ const pj = <T>(s: unknown, fallback: T): T => { try { return s == null ? fallbac
 
 export const DEFAULT_ROOMS: Omit<Room, 'id'>[] = [
   { slug: 'desenvolvimento', name: 'Desenvolvimento', kind: 'dev', color: '#f0a830', order: 0, profiles: [],
-    instructions: 'Sala de Desenvolvimento da Aurora: sites, landing pages, sistemas, correções e testes. Entregue código funcionando, rode os testes que existirem e diga como abrir o resultado localmente.' },
+    instructions: 'Sala de Desenvolvimento: sites, landing pages, sistemas, correções e testes. Entregue código funcionando, rode os testes que existirem e diga como abrir o resultado localmente.' },
   { slug: 'social-media', name: 'Social Media', kind: 'social', color: '#e36a5a', order: 1,
     profiles: [
-      { id: 'aurora', name: 'Aurora', instructions: 'Perfil editorial Aurora: o trabalho do Chefe, projetos, bastidores e serviços da Aurora (sites, landing pages, sistemas, conteúdo e vídeo). Tom humano, direto, em português do Brasil, sem travessão e sem jargão de IA. Nunca publicar nada: só produzir o conteúdo pedido.' },
-      { id: 'tuco-dev', name: 'Tuco Dev', instructions: 'Perfil editorial Tuco Dev: conteúdo educativo sobre programação, IA, automação e tecnologia, em português do Brasil, didático e bem-humorado, para quem está aprendendo. Nunca publicar nada: só produzir o conteúdo pedido.' },
+      { id: 'aurora', name: 'Aurora', instructions: 'Perfil editorial de exemplo (marca fictícia Aurora): o trabalho do Chefe, projetos, bastidores e serviços da Aurora (sites, landing pages, sistemas, conteúdo e vídeo). Tom humano, direto, em português do Brasil, sem travessão e sem jargão de IA. Nunca publicar nada: só produzir o conteúdo pedido.' },
+      { id: 'tuco-dev', name: 'Tuco Dev', instructions: 'Perfil editorial de exemplo (marca fictícia Tuco Dev): conteúdo educativo sobre programação, IA, automação e tecnologia, em português do Brasil, didático e bem-humorado, para quem está aprendendo. Nunca publicar nada: só produzir o conteúdo pedido.' },
     ],
-    instructions: 'Sala de Social Media da Aurora: pautas, roteiros, legendas, carrosséis e calendários. Salve cada entrega como arquivo Markdown na pasta do projeto, com nome descritivo e data.' },
+    instructions: 'Sala de Social Media: pautas, roteiros, legendas, carrosséis e calendários. Salve cada entrega como arquivo Markdown na pasta do projeto, com nome descritivo e data.' },
   { slug: 'design-video', name: 'Design e Vídeo', kind: 'design', color: '#b07ae0', order: 2, profiles: [],
-    instructions: 'Sala de Design e Vídeo da Aurora: briefings, interfaces, materiais visuais e projetos de vídeo (Remotion quando disponível no projeto).' },
+    instructions: 'Sala de Design e Vídeo: briefings, interfaces, materiais visuais e projetos de vídeo (Remotion quando disponível no projeto).' },
   { slug: 'pesquisa-prospeccao', name: 'Pesquisa e Prospecção', kind: 'research', color: '#6fb3e0', order: 3, profiles: [],
-    instructions: 'Sala de Pesquisa e Prospecção da Aurora: pesquisas, análise de empresas, oportunidades e preparação de abordagens. Nunca enviar mensagens a terceiros: só preparar o material.' },
+    instructions: 'Sala de Pesquisa e Prospecção: pesquisas, análise de empresas, oportunidades e preparação de abordagens. Nunca enviar mensagens a terceiros: só preparar o material.' },
   { slug: 'gestao-revisao', name: 'Gestão e Revisão', kind: 'management', color: '#7cc47f', order: 4, profiles: [],
-    instructions: 'Sala de Gestão e Revisão da Aurora: visão das tarefas, entregas, pendências e verificações. Revise com rigor e aponte exatamente o que foi verificado.' },
+    instructions: 'Sala de Gestão e Revisão: visão das tarefas, entregas, pendências e verificações. Revise com rigor e aponte exatamente o que foi verificado.' },
   { slug: 'diretoria', name: 'Diretoria', kind: 'direction', color: '#d8b04a', order: 5, profiles: [],
-    instructions: 'Diretoria da Aurora: a sala do Chefe. Funcionários alocados aqui atuam como assistentes diretos da direção: prioridades, decisões, acompanhamento dos projetos e revisão do que as outras salas entregaram.' },
+    instructions: 'Diretoria: a sala do Chefe. Funcionários alocados aqui atuam como assistentes diretos da direção: prioridades, decisões, acompanhamento dos projetos e revisão do que as outras salas entregaram.' },
   { slug: 'reunioes', name: 'Reuniões', kind: 'meeting', color: '#5fb8a8', order: 6, profiles: [],
-    instructions: 'Sala de Reuniões da Aurora: o Chefe, o Claude e o ChatGPT discutem a pauta e o Chefe decide. Participantes em modo análise: nenhum arquivo é alterado durante a reunião; o que for decidido vira tarefa na fila dos funcionários.' },
+    instructions: 'Sala de Reuniões: o Chefe, o Claude e o ChatGPT discutem a pauta e o Chefe decide. Participantes em modo análise: nenhum arquivo é alterado durante a reunião; o que for decidido vira tarefa na fila dos funcionários.' },
 ];
 
 export class Store {
@@ -49,6 +49,18 @@ export class Store {
     const next = { ...this.getSettings(), ...patch };
     this.db.prepare('INSERT INTO settings(key, value_json) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value_json = excluded.value_json').run('settings', j(next));
     return next;
+  }
+  /**
+   * Nome da empresa (primeiro acesso e Ajustes → Empresa). Valida aqui, no servidor, com a mesma regra da interface.
+   * É uma chave só dentro da linha única de settings: gravar duas vezes o mesmo nome (clique duplo, reconexão) não
+   * cria nada novo. Não toca em perfis, equipes, contas, tarefas nem conversas.
+   */
+  setCompanyName(raw: unknown): Settings {
+    const check = checkCompanyName(raw);
+    if (!check.ok) throw new Error(check.error);
+    const current = this.getSettings();
+    if (current.companyName === check.name) return current;
+    return this.saveSettings({ companyName: check.name });
   }
 
   // ---------- rooms ----------

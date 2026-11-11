@@ -1,4 +1,4 @@
-// Contrato do explorador de arquivos, das pastas extras e da lixeira da MilWeb HQ.
+// Contrato do explorador de arquivos, das pastas extras e da lixeira do My Company AI.
 // Tudo é executado pelo serviço local, no disco real, só dentro das raízes autorizadas (pastas de projeto e pastas
 // que o Chefe adicionou). Caminhos de entrada e saída são RELATIVOS à raiz, com separador '/', nunca absolutos.
 // Uma ação só é dada como concluída na interface depois da resposta (reply) do servidor.

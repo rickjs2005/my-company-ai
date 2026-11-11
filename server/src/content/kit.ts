@@ -75,7 +75,7 @@ export function defaultMirrors(home: string): MirrorSource[] {
 export function writeMirrors(folder: string, sources: MirrorSource[], now = Date.now()): { copied: number; files: number } {
   const base = path.join(folder, 'referencias', 'espelho');
   let copied = 0; let files = 0;
-  const lines = ['# Espelho de referências (gerado pela MilWeb HQ, não edite aqui)', '', `Atualizado em ${new Date(now).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}. Cópias de leitura dos originais abaixo; para mudar algo, mude o original.`, ''];
+  const lines = ['# Espelho de referências (gerado pelo My Company AI, não edite aqui)', '', `Atualizado em ${new Date(now).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}. Cópias de leitura dos originais abaixo; para mudar algo, mude o original.`, ''];
   const copyTree = (src: string, dst: string, s: MirrorSource, left: number) => {
     let ents: fs.Dirent[] = [];
     try { ents = fs.readdirSync(src, { withFileTypes: true }); } catch { return; }
@@ -110,7 +110,7 @@ export function writeDestinations(folder: string, dests: ContentDestination[], a
   const file = path.join(folder, 'equipe', 'destinos.md');
   const byslot = new Map(dests.map(d => [d.slot, d]));
   const lines = [
-    '# Destinos (gerado pela MilWeb HQ, não edite aqui)',
+    '# Destinos (gerado pelo My Company AI, não edite aqui)',
     '',
     'Fonte: Central de Redes e Calendário → Destinos. "Proposta" = matriz inicial ainda não revista pelo Chefe.',
     '',
@@ -183,7 +183,7 @@ export function portfolioProjects(siteDir: string): { slug: string; title: strin
 
 /** Gera referencias/originais.md: o que existe, onde está e quanto pesa. Nada é copiado nem movido. */
 export function writeInventory(folder: string, sources: OriginSource[], siteDir: string | null, now = Date.now()): { file: string; count: number } {
-  const lines = ['# Originais (inventário gerado pela MilWeb HQ, não edite aqui)', '', `Gerado em ${new Date(now).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}. Os arquivos continuam onde estão; use o caminho.`, ''];
+  const lines = ['# Originais (inventário gerado pelo My Company AI, não edite aqui)', '', `Gerado em ${new Date(now).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}. Os arquivos continuam onde estão; use o caminho.`, ''];
   let count = 0;
   for (const s of sources) {
     const dirs = s.dirFilter

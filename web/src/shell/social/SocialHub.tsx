@@ -49,7 +49,7 @@ export const socialSummary = (s: SocialState | null) => (s ? `${registeredCount(
 export const accountName = (a: SocialAccount) => (a.username ? `@${a.username}` : a.declared?.handle ? `@${a.declared.handle}` : a.displayName ?? null);
 const noEnter = (e: React.KeyboardEvent) => { if (e.key === 'Enter') e.preventDefault(); };
 /** Texto pronto para a publicação de teste: o Chefe lê, ajusta e dispara. */
-export const testPostText = (a: SocialAccount) => `Teste de conexão: esta publicação foi feita pela MilWeb HQ para conferir a integração com o ${SOCIAL_NETWORK_LABEL[a.network]}. Pode ignorar.`;
+export const testPostText = (a: SocialAccount) => `Teste de conexão: esta publicação foi feita pelo My Company AI para conferir a integração com o ${SOCIAL_NETWORK_LABEL[a.network]}. Pode ignorar.`;
 
 function Cap({ name, cap }: { name: string; cap: SocialCapability }) {
   return (

@@ -200,7 +200,7 @@ export class ClaudeAdapter extends EventEmitter<AiAdapterEvents> implements AiAd
       }
     });
     // Modo análise: nenhuma ferramenta que altere algo é aprovada. (Read/Glob/Grep não pedem permissão.)
-    proc.on('permission_request', r => { try { proc.respondPermission(r.requestId, { behavior: 'deny', message: 'Reunião da MilWeb HQ em modo análise: nenhuma ação é executada aqui. Responda só com texto.' }); } catch { /* ignorar */ } });
+    proc.on('permission_request', r => { try { proc.respondPermission(r.requestId, { behavior: 'deny', message: 'Reunião do My Company AI em modo análise: nenhuma ação é executada aqui. Responda só com texto.' }); } catch { /* ignorar */ } });
     proc.on('result', (r: ResultInfo) => {
       // Tokens de entrada = diretos + cache criado + cache lido (o CLI separa os três; só o primeiro seria enganoso: quase tudo vai pelo cache).
       const u = r.usage as { input_tokens?: number; output_tokens?: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number } | undefined;
@@ -250,8 +250,8 @@ export class ClaudeAdapter extends EventEmitter<AiAdapterEvents> implements AiAd
     this.busy = true; this.emitStatus();
     try {
       const handle = this.startTurn({
-        meetingId: 'test', turnId: 'test', participantId: 'test', threadId: null, cwd, title: 'Teste de conexão (MilWeb HQ)',
-        systemPrompt: 'Teste de conexão da MilWeb HQ. Responda somente "ok".', text: TEST_PROMPT, model, effort, timeoutMs: 120_000,
+        meetingId: 'test', turnId: 'test', participantId: 'test', threadId: null, cwd, title: 'Teste de conexão (My Company AI)',
+        systemPrompt: 'Teste de conexão do My Company AI. Responda somente "ok".', text: TEST_PROMPT, model, effort, timeoutMs: 120_000,
       });
       const o = await handle.done;
       return record({ ok: o.status === 'done', resolvedModel: o.applied.resolvedModel, detail: o.status === 'done' ? `respondeu: ${o.text.slice(0, 80) || '(vazio)'}` : (o.error ?? 'falhou'), durationMs: o.durationMs });

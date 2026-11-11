@@ -1,16 +1,16 @@
-// Catálogo de modelos do Claude Code, extraído do binário instalado (claude.exe 2.1.314, arquivo de 29/10/2026) em
-// 31/10/2026 lendo as entradas `{id:"claude-…",family:…,capabilities:[…],default_effort:…}`. O CLI não tem comando que
+// Catálogo de modelos do Claude Code, extraído do binário instalado (claude.exe 2.1.322, arquivo de 10/11/2026) em
+// 11/11/2026 lendo as entradas `{id:"claude-…",family:…,capabilities:[…],default_effort:…}`. O CLI não tem comando que
 // liste modelos; por isso a origem e a data ficam registradas aqui e aparecem na interface. Quando a versão instalada
 // não for a do catálogo, a interface avisa que a lista pode estar desatualizada (o teste de conexão é a prova real).
 import type { AiModelOption, EffortLevel } from '@milweb-hq/protocol';
 
-export const CLAUDE_CATALOG_CLI_VERSION = '2.1.314';
-export const CLAUDE_CATALOG_AT = Date.UTC(2026, 9, 31, 3, 0, 0); // 31/10/2026 00:00 BRT
-export const CLAUDE_CATALOG_SOURCE = `binário do Claude Code ${CLAUDE_CATALOG_CLI_VERSION} (claude.exe de 29/10/2026), lido em 31/10/2026`;
+export const CLAUDE_CATALOG_CLI_VERSION = '2.1.322';
+export const CLAUDE_CATALOG_AT = Date.UTC(2026, 10, 11, 3, 0, 0); // 11/11/2026 00:00 BRT
+export const CLAUDE_CATALOG_SOURCE = `binário do Claude Code ${CLAUDE_CATALOG_CLI_VERSION} (claude.exe de 10/11/2026), lido em 11/11/2026`;
 
-/** Aliases aceitos por --model, tal como o binário 2.1.314 os mapeia. */
+/** Aliases aceitos por --model, tal como o binário 2.1.322 os mapeia. */
 export const CLAUDE_ALIASES: Record<string, string> = {
-  fable: 'claude-fable-5-1',
+  fable: 'claude-fable-5-2',
   opus: 'claude-opus-5-5',
   sonnet: 'claude-sonnet-5-5',
   haiku: 'claude-haiku-5-5',
@@ -29,10 +29,12 @@ interface CatalogEntry {
 const E: CatalogEntry['caps'] = ['effort', 'xhigh_effort', 'max_effort'];
 
 export const CLAUDE_CATALOG: CatalogEntry[] = [
-  { id: 'claude-fable-5-1', label: 'Fable 5.1', caps: E, defaultEffort: 'high', cutoff: 'junho de 2026', recommended: true },
+  { id: 'claude-fable-5-2', label: 'Fable 5.2', caps: E, defaultEffort: 'medium', cutoff: 'junho de 2026', recommended: true },
+  { id: 'claude-fable-5-1', label: 'Fable 5.1', caps: E, defaultEffort: 'high', cutoff: 'junho de 2026' },
   { id: 'claude-opus-5-5', label: 'Opus 5.5', caps: E, defaultEffort: 'medium', cutoff: 'junho de 2026', recommended: true },
   { id: 'claude-sonnet-5-5', label: 'Sonnet 5.5', caps: E, defaultEffort: 'medium', cutoff: 'junho de 2026', recommended: true },
   { id: 'claude-haiku-5-5', label: 'Haiku 5.5', caps: E, defaultEffort: 'medium', cutoff: 'junho de 2026', recommended: true },
+  { id: 'claude-mythos-5-2', label: 'Mythos 5.2', caps: E, defaultEffort: 'medium', cutoff: 'junho de 2026' },
   { id: 'claude-mythos-5-1', label: 'Mythos 5.1', caps: E, defaultEffort: 'high', cutoff: 'junho de 2026' },
   { id: 'claude-opus-5', label: 'Opus 5', caps: E, defaultEffort: 'high', cutoff: 'maio de 2026' },
   { id: 'claude-fable-5', label: 'Fable 5', caps: E, defaultEffort: 'high', cutoff: 'janeiro de 2026' },

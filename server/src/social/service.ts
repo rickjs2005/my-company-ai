@@ -513,9 +513,9 @@ export class SocialService {
 /** Página mostrada no navegador depois do retorno (sem token, sem dados sensíveis). */
 export function callbackPage(r: CallbackResult): string {
   const esc = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
-  return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>MilWeb HQ · ${esc(r.title)}</title>
+  return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>My Company AI · ${esc(r.title)}</title>
 <style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#121014;color:#ece6dc;font:15px/1.5 system-ui,sans-serif}main{max-width:520px;margin:24px;padding:24px 26px;border-radius:12px;background:#1d1a20;border:1px solid ${r.ok ? '#3f6b41' : '#7a3b33'}}h1{margin:0 0 8px;font-size:18px;color:${r.ok ? '#7cc47f' : '#e36a5a'}}p{margin:0 0 10px}small{color:#9a9098}</style></head>
-<body><main><h1>${esc(r.title)}</h1><p>${esc(r.message)}</p><small>MilWeb HQ · esta aba pode ser fechada.</small></main></body></html>`;
+<body><main><h1>${esc(r.title)}</h1><p>${esc(r.message)}</p><small>My Company AI · esta aba pode ser fechada.</small></main></body></html>`;
 }
 
 /**
@@ -531,14 +531,14 @@ export function bouncePageHtml(): string {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
-<title>MilWeb HQ · voltando</title>
+<title>My Company AI · voltando</title>
 <style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#121014;color:#ece6dc;font:15px/1.5 system-ui,sans-serif}main{max-width:480px;margin:24px;padding:22px 24px;border-radius:12px;background:#1d1a20;border:1px solid #3a3036}a{color:#f0a830}</style>
 </head>
 <body>
 <main>
-<p><strong>Voltando para a MilWeb HQ…</strong></p>
+<p><strong>Voltando para o My Company AI…</strong></p>
 <p id="m">Se nada acontecer, a HQ não está ligada neste computador. Ligue a HQ e use o link abaixo.</p>
-<p><a id="l" href="#">Continuar na MilWeb HQ</a></p>
+<p><a id="l" href="#">Continuar no My Company AI</a></p>
 </main>
 <script>
 (function () {

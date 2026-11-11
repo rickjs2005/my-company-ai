@@ -176,9 +176,9 @@ test('Threads: estado próprio; publicar só quando mandam, uma vez por envio; l
   s.svc.setProfiles('threads', ['aurora', 'inexistente']);
   assert.deepEqual(acct(s, 'threads').profileIds, ['aurora']);
   await assert.rejects(s.svc.publish('threads', 'envio-teste-0001', 'x'.repeat(501), null), /até 500 caracteres/);
-  const p1 = await s.svc.publish('threads', 'envio-teste-0001', 'Teste da MilWeb HQ', null);
+  const p1 = await s.svc.publish('threads', 'envio-teste-0001', 'Teste do My Company AI', null);
   assert.equal(p1.duplicate, false); assert.equal(p1.url, 'https://www.threads.com/@chefe.threads/post/abc');
-  const p2 = await s.svc.publish('threads', 'envio-teste-0001', 'Teste da MilWeb HQ', null);
+  const p2 = await s.svc.publish('threads', 'envio-teste-0001', 'Teste do My Company AI', null);
   assert.equal(p2.duplicate, true); assert.equal(s.net.posts, 1, 'o mesmo envio não publica duas vezes');
   const after = acct(s, 'threads');
   assert.equal(after.capabilities.publish.state, 'tested');

@@ -29,7 +29,7 @@ export interface ServiceCardProps {
 
 const UNAVAILABLE_TITLE = 'indisponível nesta versão do serviço';
 const SHUTDOWN_CONFIRM =
-  'Encerrar o serviço da MilWeb HQ?\n\n' +
+  'Encerrar o serviço do My Company AI?\n\n' +
   'Os processos do Claude Code e do Codex abertos pela HQ são fechados de forma ordenada. ' +
   'As conversas ficam salvas e podem ser retomadas quando o serviço voltar. Esta aba vai perder a conexão.';
 

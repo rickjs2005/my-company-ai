@@ -1,6 +1,6 @@
 ---
 name: rede-linkedin
-description: Especialidade LinkedIn da sala Social Media da MilWeb HQ. Usar para posts de reputação profissional no perfil do Chefe - cases reais, decisões de desenvolvimento e aprendizados. Entrega peca.md + entrega.json. Não publica nem envia convite ou mensagem.
+description: Especialidade LinkedIn da sala Social Media do My Company AI. Usar para posts de reputação profissional no perfil do Chefe - cases reais, decisões de desenvolvimento e aprendizados. Entrega peca.md + entrega.json. Não publica nem envia convite ou mensagem.
 ---
 
 # LinkedIn

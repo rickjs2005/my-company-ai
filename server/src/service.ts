@@ -131,7 +131,7 @@ $a = New-ScheduledTaskAction -Execute ${q(process.execPath)} -Argument ${q(this.
 $t = New-ScheduledTaskTrigger -AtLogOn -User $user
 $s = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew -StartWhenAvailable
 $p = New-ScheduledTaskPrincipal -UserId $user -LogonType Interactive -RunLevel Limited
-Register-ScheduledTask -TaskName ${q(this.taskName)} -Action $a -Trigger $t -Settings $s -Principal $p -Description 'MilWeb HQ: sobe o servico local em segundo plano quando voce entra no Windows (sem janela). Criada pela propria HQ; desligue em Ajustes > Conexoes.' -Force | Out-Null
+Register-ScheduledTask -TaskName ${q(this.taskName)} -Action $a -Trigger $t -Settings $s -Principal $p -Description 'My Company AI: sobe o servico local em segundo plano quando voce entra no Windows (sem janela). Criada pela propria HQ; desligue em Ajustes > Conexoes.' -Force | Out-Null
 'ok'` : `$ErrorActionPreference='Stop'
 if (Get-ScheduledTask -TaskName ${q(this.taskName)} -ErrorAction SilentlyContinue) { Unregister-ScheduledTask -TaskName ${q(this.taskName)} -Confirm:$false }
 'ok'`;

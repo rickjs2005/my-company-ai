@@ -309,7 +309,7 @@ export function videoAnalysisPrompt(o: { now: number; outputPath: string; dir: s
 export function studyPrompt(o: { now: number; outputPath: string; dir: string; url: string | null; level: string; summary: string; liked: string | null; instruction: string | null; sheets: number; hasPage: boolean; others?: VideoOther[]; watch?: VideoSeen['watch']; team: { name: string; role: string; profile: string | null }[] }): string {
   const others = o.others ?? [];
   return [
-    `Estudo de vídeo para a Academia de Vídeo da Aurora, como Diretor de Vídeo & Motion Design. Agora: ${nowBrt(o.now)} (Brasília).`,
+    `Estudo de vídeo para a Academia de Vídeo da empresa, como Diretor de Vídeo & Motion Design. Agora: ${nowBrt(o.now)} (Brasília).`,
     o.instruction ? `O Chefe escreveu: "${o.instruction}"` : 'O Chefe mandou este vídeo para a equipe estudar.',
     'Ele quer que a equipe aprenda a fazer vídeos deste nível. O seu trabalho aqui é estudar, ensinar e treinar a equipe; não é produzir uma peça para postar.',
     '',

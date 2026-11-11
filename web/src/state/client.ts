@@ -89,7 +89,7 @@ export class HqClient {
 
   /** Mensagem sem resposta (fire-and-forget). Lança se não houver conexão. */
   send(msg: ClientMessage): void {
-    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) throw new Error('sem conexão com o serviço da MilWeb HQ');
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) throw new Error('sem conexão com o serviço do My Company AI');
     this.ws.send(JSON.stringify(msg));
   }
 

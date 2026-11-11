@@ -98,7 +98,7 @@ test('equipe fazendo: tarefa avulsa da sala aparece (rodando antes da fila); pe�
     t('fila', 'queued', { prompt: 'Rodada do Radar da gringa. Agora: 06/11', createdAt: NOW - 60_000 }),
     t('peca', 'running'),
     t('video', 'running'),
-    t('caiu', 'interrupted', { finishedAt: NOW - 3_600_000, errors: ['O serviço da MilWeb HQ reiniciou enquanto esta tarefa rodava.'] }),
+    t('caiu', 'interrupted', { finishedAt: NOW - 3_600_000, errors: ['O serviço do My Company AI reiniciou enquanto esta tarefa rodava.'] }),
     t('velha', 'error', { finishedAt: NOW - 3 * 86_400_000 }),
     t('refeita', 'lost', { finishedAt: NOW - 60_000 }), t('nova', 'queued', { retryOf: 'refeita', createdAt: NOW - 30_000 }),
     t('escondida', 'error', { finishedAt: NOW - 60_000 }),
@@ -116,7 +116,7 @@ test('equipe fazendo: tarefa avulsa da sala aparece (rodando antes da fila); pe�
   assert.equal(taskLabel(t('l', 'running', { prompt: 'https://www.tiktok.com/@o/video/1?is_from_webapp=1. queria um assim pro tuco' })), 'Queria um assim pro tuco', 'o link sai do título');
   assert.equal(taskLabel(t('l2', 'running', { prompt: 'https://x.com/a/status/1' })), 'Análise de um link');
   assert.equal(stopReason(t('d', 'interrupted', { errors: ['[ede_diagnostic] result_type=user last_content_type=n/a stop_reason=tool_use'] })), 'Parou no meio (a HQ reiniciou ou a tarefa foi interrompida).', 'diagnóstico técnico não aparece');
-  assert.equal(stopReason(t('e', 'lost', { errors: ['O serviço da MilWeb HQ reiniciou enquanto esta tarefa rodava.', '[ede_diagnostic] x=1 y=2'] })), 'O serviço da MilWeb HQ reiniciou enquanto esta tarefa rodava.');
+  assert.equal(stopReason(t('e', 'lost', { errors: ['O serviço do My Company AI reiniciou enquanto esta tarefa rodava.', '[ede_diagnostic] x=1 y=2'] })), 'O serviço do My Company AI reiniciou enquanto esta tarefa rodava.');
   assert.equal(ago(NOW - 6 * 60_000, NOW), 'há 6 min');
   assert.equal(ago(NOW - 2 * 3_600_000, NOW), 'há 2 h');
 });

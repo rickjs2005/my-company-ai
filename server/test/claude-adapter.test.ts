@@ -23,7 +23,7 @@ test('status e catálogo: origem, data, aliases recomendados primeiro, esforços
   const st = a.status();
   assert.equal(st.provider, 'claude'); assert.equal(st.installed, true); assert.equal(st.authState, 'ok'); assert.equal(st.authMethod, 'claude.ai · max');
   assert.match(st.catalogSource, /2\.1\.314/); assert.ok(st.catalogAt);
-  assert.equal(st.models[0].id, 'fable'); assert.equal(st.models[0].alias, true); assert.equal(st.models[0].resolvesTo, 'claude-fable-5-1');
+  assert.equal(st.models[0].id, 'fable'); assert.equal(st.models[0].alias, true); assert.equal(st.models[0].resolvesTo, 'claude-fable-5-2');
   assert.deepEqual(st.models.find(m => m.id === 'claude-opus-4-6')!.efforts, ['low', 'medium', 'high', 'max']);
   assert.deepEqual(st.models.find(m => m.id === 'claude-3-5-haiku')!.efforts, []);
   assert.equal(claudeModelOptions().length, CLAUDE_CATALOG.length + 4);

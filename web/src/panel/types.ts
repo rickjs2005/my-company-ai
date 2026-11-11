@@ -178,7 +178,9 @@ export interface SettingsDialogProps {
   socialSection?: React.ReactNode;
   open: boolean;
   /** Aba mostrada ao abrir (padrão 'general'); a tela de Reuniões abre direto em 'ai'. */
-  initialTab?: 'general' | 'ai' | 'data';
+  initialTab?: 'general' | 'company' | 'ai' | 'data';
+  /** Ajustes → Empresa: grava o nome no servidor (resolve só depois da confirmação). Sem isto, a aba não aparece. */
+  onCompanyName?(name: string): Promise<void>;
   settings: Settings;
   serverInfo: ServerInfo | null;
   /** As preferências de IA vão em patch.ai = { claude: {model, effort}, openai: {model, effort} }. */

@@ -1,6 +1,6 @@
 ---
 name: rede-instagram
-description: Especialidade Instagram da sala Social Media da MilWeb HQ. Usar para produzir Reel (vídeo pronto pela HQ a partir do video.json) ou carrossel (slides prontos pela HQ a partir do carrossel.json) para o Instagram Tuco Dev (tecnologia acessível e humor dev) ou o Instagram Aurora (trabalho real do Chefe). Entrega a peça pronta para postar, com a legenda. Não publica.
+description: Especialidade Instagram da sala Social Media do My Company AI. Usar para produzir Reel (vídeo pronto pela HQ a partir do video.json) ou carrossel (slides prontos pela HQ a partir do carrossel.json) para o Instagram Tuco Dev (tecnologia acessível e humor dev) ou o Instagram Aurora (trabalho real do Chefe). Entrega a peça pronta para postar, com a legenda. Não publica.
 ---
 
 # Instagram (Tuco Dev e Aurora)

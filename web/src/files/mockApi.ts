@@ -160,7 +160,7 @@ export function createMockFsApi(onRootsChange: (roots: FsRoot[]) => void, onTras
       const p = path.trim();
       if (!/^[a-zA-Z]:\\/.test(p)) throw new MockError(`a pasta não existe: ${p}`, 'not_found');
       if (state.roots.some(r => r.path.toLowerCase() === p.toLowerCase())) throw new MockError('esta pasta já está cadastrada', 'exists');
-      if (/MilWebHQ/i.test(p)) throw new MockError('esta pasta pertence à própria MilWeb HQ (dados ou instalação)', 'protected');
+      if (/MilWebHQ/i.test(p)) throw new MockError('esta pasta pertence ao próprio My Company AI (dados ou instalação)', 'protected');
       const id = `f${seq++}`;
       const folder: Folder = { id, name: name ?? p.split('\\').filter(Boolean).pop() ?? p, path: p, addedAt: Date.now() };
       trees.set(`folder:${id}`, dir({ 'exemplo.txt': file('pasta adicionada no playground\n') }));

@@ -1,4 +1,4 @@
-// Restaura um backup do banco da MilWeb HQ (Marco 0). JavaScript puro, roda com a HQ DESLIGADA.
+// Restaura um backup do banco do My Company AI (Marco 0). JavaScript puro, roda com a HQ DESLIGADA.
 // Uso: node restore.mjs <arquivo-de-backup> [--data PASTA] [--port 4777] [--yes]
 // Sem --yes só confere e mostra o que faria. Com --yes:
 //   1) recusa se a HQ responde na porta (encerre antes: Ajustes > Conexões > Encerrar HQ);

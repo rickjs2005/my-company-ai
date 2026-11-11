@@ -1,4 +1,4 @@
-/* Painel de trabalho e casca da interface da MilWeb HQ. Usa os tokens de base.css. Prefixo hq-. */
+/* Painel de trabalho e casca da interface do My Company AI. Usa os tokens de base.css. Prefixo hq-. */
 
 /* ---------- Casca ---------- */
 .hq-app { display: flex; flex-direction: column; height: 100%; min-width: 1100px; background: var(--bg); }

@@ -1,4 +1,4 @@
-// App real da MilWeb HQ (v3): conecta ao serviço local, mostra o escritório com o avatar do Chefe, a equipe
+// App real do My Company AI (v3): conecta ao serviço local, mostra o escritório com o avatar do Chefe, a equipe
 // (funcionários com identidade persistente), a sala de Reuniões (Chefe + Claude + ChatGPT), projetos, explorador de arquivos e lixeira.
 // Tudo o que aparece aqui vem do servidor (processos reais do Claude Code, disco real). Nada é simulado.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -41,6 +41,7 @@ import { AbsenceDialog } from './shell/AbsenceDialog';
 import { absencePatch } from './shell/absenceHelpers';
 import { RoutinesView } from './shell/RoutinesView';
 import { EmployeeDialog, type EmployeeInput } from './shell/EmployeeDialog';
+import { CompanySetup } from './shell/CompanySetup';
 import { MeetingsView } from './meetings';
 import { ProjectCabinet } from './shell/ProjectCabinet';
 import { QuickSearch, type QuickAction, type QuickFileHit } from './shell/QuickSearch';
@@ -56,7 +57,7 @@ import { activeRequests, isActive, pieceCounts, requestProgress } from './shell/
 import { VIDEO_SKILL, boardCounts, destinationLabel, destinationState, destinationsFor, meetingAvailability, pieceOfTask, roomTasks, waitingForChefe } from './shell/social/socialHelpers';
 import { SocialHub, readyCount, socialSummary, type SocialHubApi } from './shell/social/SocialHub';
 import type { ContentItem, ContentItemFiles, FileView, KnowledgeInput, KnowledgeItem, KnowledgeScope, KnowledgeUse, SocialAppId, SocialPublishResult, SocialSlotId } from '@milweb-hq/protocol';
-import { SOCIAL_SLOTS } from '@milweb-hq/protocol';
+import { companyDisplayName, configuredCompanyName, documentTitle, SOCIAL_SLOTS } from '@milweb-hq/protocol';
 import './styles/panel.css';
 import './styles/app.css';
 import './styles/files.css';
@@ -71,7 +72,7 @@ type Dialog =
   | { kind: 'session'; roomId: string; projectId: string | null; employeeId: string | null }
   | { kind: 'project'; roomId: string | null }
   | { kind: 'room'; roomId: string }
-  | { kind: 'settings'; tab?: 'general' | 'ai' | 'data' }
+  | { kind: 'settings'; tab?: 'general' | 'company' | 'ai' | 'data' }
   | { kind: 'employee'; employeeId: string | null; roomId: string | null }
   | { kind: 'addSkill'; projectId: string | null }
   | { kind: 'away'; summary: AwaySummary }
@@ -116,12 +117,12 @@ function mergeTree(root: FileNode, node: FileNode): FileNode {
 
 export function App() {
   const token = useMemo(() => readToken(), []);
-  if (!token) return <Gate title="Abra pelo atalho" body={<><p>Esta aba foi aberta sem o token de acesso. A MilWeb HQ só aceita o navegador que o próprio serviço abriu.</p><p>Rode o <code>start-hq.cmd</code> de novo. Se a HQ já estiver ligada, ele só abre uma aba nova com o acesso.</p></>} />;
+  if (!token) return <Gate title="Abra pelo atalho" body={<><p>Esta aba foi aberta sem o token de acesso. O My Company AI só aceita o navegador que o próprio serviço abriu.</p><p>Rode o <code>start-hq.cmd</code> de novo. Se a HQ já estiver ligada, ele só abre uma aba nova com o acesso.</p></>} />;
   return <ConnectedApp token={token} />;
 }
 
 function Gate({ title, body }: { title: string; body: React.ReactNode }) {
-  return <div className="hq-gate"><div className="hq-gate__card"><h1>MILWEB HQ</h1><p className="hq-strong">{title}</p>{body}</div></div>;
+  return <div className="hq-gate"><div className="hq-gate__card"><h1>MY COMPANY AI</h1><p className="hq-strong">{title}</p>{body}</div></div>;
 }
 
 function ConnectedApp({ token }: { token: string }) {
@@ -338,18 +339,30 @@ function ConnectedApp({ token }: { token: string }) {
     if (dialog.kind !== 'settings' || !client || connection !== 'open') return;
     client.request<ServiceStatus>({ type: 'service.status' }, 15_000).then(s => store.set(st => ({ ...st, serviceStatus: s }))).catch(() => { /* versão do serviço sem controle em segundo plano: o cartão mostra o que sabe */ });
   }, [dialog.kind, client, connection, store]);
+  // Nome da empresa (primeiro acesso): enquanto o servidor não tiver um nome gravado, a tela de boas-vindas cobre o escritório.
+  const companyNamed = configuredCompanyName(state.settings) != null;
+  const companyName = companyDisplayName(state.settings);
+  const needsCompanyName = connection === 'open' && state.lastSnapshotAt != null && !companyNamed;
+  const companyTitle = documentTitle(state.settings);
+  useEffect(() => { document.title = companyTitle; }, [companyTitle]);
+  const saveCompanyName = useCallback(async (name: string) => {
+    if (!client) throw new Error('sem conexão com o serviço');
+    // Só segue adiante com a resposta do servidor (gravado no SQLite); o aviso geral de configurações chega em seguida.
+    const r = await client.request<{ companyName: string }>({ type: 'company.setName', name }, 20_000);
+    store.set(s => ({ ...s, settings: { ...s.settings, companyName: r.companyName } }));
+  }, [client, store]);
   // "Enquanto você esteve fora": uma vez por retrato completo, só quando a última interface conectada saiu há tempo suficiente.
   useEffect(() => {
-    if (connection !== 'open' || !client || state.lastSnapshotAt == null || awayChecked.current === state.lastSnapshotAt) return;
+    if (connection !== 'open' || !client || state.lastSnapshotAt == null || !companyNamed || awayChecked.current === state.lastSnapshotAt) return;
     awayChecked.current = state.lastSnapshotAt;
     const since = state.settings.lastSeenAt;
     if (!since || Date.now() - since < AWAY_MIN_MS) return;
     client.request<AwaySummary>({ type: 'away.summary', since }, 30_000)
       .then(s => { if (!awaySummaryIsEmpty(s)) setDialog(d => (d.kind === 'none' ? { kind: 'away', summary: s } : d)); })
       .catch(err => notify('warn', `Resumo da ausência: ${(err as Error).message}`));
-  }, [connection, client, state.lastSnapshotAt, state.settings.lastSeenAt, notify]);
+  }, [connection, client, state.lastSnapshotAt, state.settings.lastSeenAt, notify, companyNamed]);
   // Primeiro uso: aparece até concluir/dispensar; se tudo já está pronto (HQ em uso), marca como feito sem perguntar.
-  const onboardingReady = connection === 'open' && state.lastSnapshotAt != null && !state.settings.onboardingDone && !onboardingLater;
+  const onboardingReady = connection === 'open' && state.lastSnapshotAt != null && companyNamed && !state.settings.onboardingDone && !onboardingLater;
   const onboardingAllDone = useMemo(() => { const s = onboardingSteps(state.ai, state.projects, state.employees); return s.ai && s.project && s.employee; }, [state.ai, state.projects, state.employees]);
   useEffect(() => {
     if (onboardingReady && onboardingAllDone && client) { setOnboardingLater(true); safe(() => client.send({ type: 'settings.update', patch: { onboardingDone: true } })); }
@@ -650,7 +663,7 @@ function ConnectedApp({ token }: { token: string }) {
   }, [client]);
   // Sala de Reuniões: mensagens com reqId esperam a resposta do servidor (a tela manda reqId: '' e o cliente preenche); as outras são só enviadas.
   const meetingDispatch = useCallback(async (msg: MeetingClientMessage): Promise<unknown> => {
-    if (!client) throw new Error('sem conexão com o serviço da MilWeb HQ');
+    if (!client) throw new Error('sem conexão com o serviço do My Company AI');
     if ('reqId' in msg) return client.request(msg as unknown as Parameters<HqClient['request']>[0], 90_000);
     client.send(msg);
     return undefined;
@@ -663,7 +676,7 @@ function ConnectedApp({ token }: { token: string }) {
   }, [store]);
   // Compositor único: task.run com clientId estável (idempotente no servidor).
   const runTask = useCallback(async (input: Omit<TaskRunInput, 'reqId'>): Promise<TaskRunResult> => {
-    if (!client) throw new Error('sem conexão com o serviço da MilWeb HQ');
+    if (!client) throw new Error('sem conexão com o serviço do My Company AI');
     return client.request<TaskRunResult>({ type: 'task.run', ...input }, 90_000);
   }, [client]);
   // Abre a conversa de uma tarefa: torna-a ativa no funcionário e foca o painel de chat.
@@ -920,7 +933,7 @@ function ConnectedApp({ token }: { token: string }) {
   const pieceApi: PieceApi = useMemo(() => ({
     accounts: socialAccounts, hub: hubApi,
     projects: state.projects,
-    read: (projectId, rel) => (fsApi ? fsApi.read(`project:${projectId}`, rel) : Promise.reject(new Error('sem conexão com o serviço da MilWeb HQ'))),
+    read: (projectId, rel) => (fsApi ? fsApi.read(`project:${projectId}`, rel) : Promise.reject(new Error('sem conexão com o serviço do My Company AI'))),
     openFile: abs => viewFile(abs),
     view: r => setViewer(r),
     pieceOf: t => pieceOfTask(state.content?.items ?? [], t),
@@ -940,7 +953,7 @@ function ConnectedApp({ token }: { token: string }) {
   };
   // Seletor de arquivos da reunião: identidade estável (muda só quando as raízes ou a conexão mudam).
   const meetingFsRoots = useCallback(async () => fsRoots, [fsRoots]);
-  const meetingFsList = useCallback((rootId: string, p: string) => (fsApi ? fsApi.list(rootId, p) : Promise.reject(new Error('sem conexão com o serviço da MilWeb HQ'))), [fsApi]);
+  const meetingFsList = useCallback((rootId: string, p: string) => (fsApi ? fsApi.list(rootId, p) : Promise.reject(new Error('sem conexão com o serviço do My Company AI'))), [fsApi]);
 
   const goSocial = useCallback(() => {
     setRoomMode('social'); setView('office'); setRoomPanelOpen(false);
@@ -1021,6 +1034,7 @@ function ConnectedApp({ token }: { token: string }) {
     { id: 'routines', label: 'Rotinas', run: () => setView('routines') },
     { id: 'away', label: 'Vou sair (modo ausente)', run: () => setDialog({ kind: 'absence' }) },
     { id: 'settings', label: 'Ajustes', run: () => setDialog({ kind: 'settings' }) },
+    { id: 'company', label: 'Nome da empresa', hint: 'Ajustes → Empresa', run: () => setDialog({ kind: 'settings', tab: 'company' }) },
     { id: 'data', label: 'Dados e backup', hint: 'Ajustes → Dados', run: () => setDialog({ kind: 'settings', tab: 'data' }) },
   ];
   const searchProjectFiles = async (query: string): Promise<QuickFileHit[]> => {
@@ -1045,8 +1059,11 @@ function ConnectedApp({ token }: { token: string }) {
   const dialogSessionEmployee = dialog.kind === 'session' && dialog.employeeId ? state.employees.find(e => e.id === dialog.employeeId) ?? null : null;
 
   return (
-    <div className="hq-app">
+    <>
+    {needsCompanyName && <CompanySetup hasData={state.employees.length > 0 || state.tasks.length > 0} onSave={saveCompanyName} />}
+    <div className="hq-app" inert={needsCompanyName}>
       <TopBar
+        companyName={companyName}
         desk={{ count: deskCounts.total }} onOpenDesk={openDesk}
         connection={connection} lastSnapshotAt={state.lastSnapshotAt} serverInfo={state.serverInfo} room={roomMode === 'social' ? socialRoom : room ?? playerRoom}
         onReconnect={() => client?.connect()}
@@ -1072,7 +1089,7 @@ function ConnectedApp({ token }: { token: string }) {
         {/* A navegação ocupa a altura toda; o compositor fica só sob a área de trabalho (palco + painel). */}
         <div className="hq-app__work">
         <div className="hq-app__row">
-        <main className={`hq-stage${connection !== 'open' ? ' hq-stage--dim' : ''}`} ref={stageRef} aria-label="Escritório da MilWeb HQ">
+        <main className={`hq-stage${connection !== 'open' ? ' hq-stage--dim' : ''}`} ref={stageRef} aria-label={`Escritório: ${companyName}`}>
           <div className="st-stage hq-stage__studio">
             <canvas ref={isoCanvasRef} className="hq-stage__canvas" tabIndex={0} aria-label="Estúdio Aurora em 3D: cada personagem é um funcionário real da HQ e só se move quando há trabalho de verdade. Os botões logo abaixo abrem os mesmos objetos pelo teclado." />
             <div ref={isoOverlayRef} className="st-overlay" />
@@ -1081,7 +1098,7 @@ function ConnectedApp({ token }: { token: string }) {
           {roomMode === 'social' || roomMode === 'plan' ? (
             <>
               <div className="hq-stage__hud">
-                <div className="hq-stage__where"><span>Social Media</span><strong>2 equipes: Aurora e Tuco Dev</strong></div>
+                <div className="hq-stage__where"><span>Social Media</span><strong title="Aurora e Tuco Dev são marcas fictícias de exemplo; não são contas reais">2 equipes de exemplo: Aurora e Tuco Dev</strong></div>
               </div>
               <div className="hq-iso__objects" role="toolbar" aria-label="Objetos da sala Social Media">
                 <button type="button" className="hq-btn hq-btn--sm" onClick={() => onIsoTarget({ kind: 'chefe-desk' })}>Mesa do Chefe</button>
@@ -1191,7 +1208,7 @@ function ConnectedApp({ token }: { token: string }) {
                   catalog={skillsCatalog?.catalog ?? null} loading={Boolean(skillsCatalog?.loading)} error={skillsCatalog?.error ?? null}
                   projects={state.projects} projectId={skillsViewProjectId} onProjectChange={setSkillsViewProjectId} onRefresh={() => loadCatalog(skillsViewProjectId, true)}
                   favorites={favorites} onToggleFavorite={toggleFavorite} onUseSkill={useSkill}
-                  onReadSkill={path => (client ? client.request<SkillFileContent>({ type: 'skills.read', path }, 30_000) : Promise.reject(new Error('sem conexão com o serviço da MilWeb HQ')))}
+                  onReadSkill={path => (client ? client.request<SkillFileContent>({ type: 'skills.read', path }, 30_000) : Promise.reject(new Error('sem conexão com o serviço do My Company AI')))}
                   onAddLocal={() => setDialog({ kind: 'addSkill', projectId: skillsViewProjectId })}
                   onOpenExternal={(t, v) => openExternal(t, v)}
                 />
@@ -1202,9 +1219,9 @@ function ConnectedApp({ token }: { token: string }) {
               {view === 'routines' && (
                 <RoutinesView
                   routines={state.routines} employees={state.employees} projects={state.projects} tasks={state.tasks} connected={connection === 'open'}
-                  onSave={async (input, id) => { if (!client) throw new Error('sem conexão com o serviço da MilWeb HQ'); await client.request(id ? { type: 'routine.update', id, patch: input } : { type: 'routine.create', routine: input }, 30_000); }}
-                  onToggle={async (id, enabled) => { if (!client) throw new Error('sem conexão com o serviço da MilWeb HQ'); await client.request({ type: 'routine.update', id, patch: { enabled } }, 30_000); }}
-                  onRunNow={async id => { if (!client) throw new Error('sem conexão com o serviço da MilWeb HQ'); await client.request({ type: 'routine.runNow', id }, 60_000); notify('info', 'Rotina enviada: a tarefa entrou na fila.'); }}
+                  onSave={async (input, id) => { if (!client) throw new Error('sem conexão com o serviço do My Company AI'); await client.request(id ? { type: 'routine.update', id, patch: input } : { type: 'routine.create', routine: input }, 30_000); }}
+                  onToggle={async (id, enabled) => { if (!client) throw new Error('sem conexão com o serviço do My Company AI'); await client.request({ type: 'routine.update', id, patch: { enabled } }, 30_000); }}
+                  onRunNow={async id => { if (!client) throw new Error('sem conexão com o serviço do My Company AI'); await client.request({ type: 'routine.runNow', id }, 60_000); notify('info', 'Rotina enviada: a tarefa entrou na fila.'); }}
                   onDelete={id => { if (client) safe(() => client.send({ type: 'routine.delete', id })); }}
                   onOpenEmployee={id => { selectWorker(id, true); setTab('chat'); setView('office'); sceneRef.current?.focusWorker(id, true); }}
                 />
@@ -1457,30 +1474,32 @@ function ConnectedApp({ token }: { token: string }) {
       <RoomEditor open={dialog.kind === 'room'} room={dialog.kind === 'room' ? state.rooms.find(r => r.id === dialog.roomId) ?? null : null}
         onSave={patch => { if (client && dialog.kind === 'room') safe(() => client.send({ type: 'room.update', id: dialog.roomId, patch })); setDialog({ kind: 'none' }); }} onCancel={() => setDialog({ kind: 'none' })} />
       <SettingsDialog socialSection={hubApi ? <SocialHub state={state.social} profiles={socialRoom?.profiles ?? []} api={hubApi} /> : null} open={dialog.kind === 'settings'} initialTab={dialog.kind === 'settings' ? dialog.tab : undefined} settings={state.settings} serverInfo={state.serverInfo} ai={state.ai}
-        onAiRefresh={async provider => { if (!client) throw new Error('sem conexão com o serviço da MilWeb HQ'); await client.request({ type: 'ai.refresh', provider }, 60_000); }}
-        onAiTest={(provider, model, effort) => (client ? client.request<AiTestResult>({ type: 'ai.test', provider, model, effort }, 150_000) : Promise.reject(new Error('sem conexão com o serviço da MilWeb HQ')))}
-        onAiLoginStart={provider => (client ? client.request<{ url: string | null; detail: string }>({ type: 'ai.login.start', provider }, 60_000) : Promise.reject(new Error('sem conexão com o serviço da MilWeb HQ')))}
+        onAiRefresh={async provider => { if (!client) throw new Error('sem conexão com o serviço do My Company AI'); await client.request({ type: 'ai.refresh', provider }, 60_000); }}
+        onAiTest={(provider, model, effort) => (client ? client.request<AiTestResult>({ type: 'ai.test', provider, model, effort }, 150_000) : Promise.reject(new Error('sem conexão com o serviço do My Company AI')))}
+        onAiLoginStart={provider => (client ? client.request<{ url: string | null; detail: string }>({ type: 'ai.login.start', provider }, 60_000) : Promise.reject(new Error('sem conexão com o serviço do My Company AI')))}
         onAiLoginCancel={provider => { if (client) safe(() => client.send({ type: 'ai.login.cancel', provider })); }}
         onOpenExternal={url => openExternal('url', url)}
         connection={connection} lastSnapshotAt={state.lastSnapshotAt} service={state.serviceStatus}
         onReconnect={() => client?.connect()}
-        onRefreshService={async () => { if (!client) throw new Error('sem conexão com o serviço da MilWeb HQ'); const s = await client.request<ServiceStatus>({ type: 'service.status' }, 15_000); store.set(st => ({ ...st, serviceStatus: s })); }}
+        onRefreshService={async () => { if (!client) throw new Error('sem conexão com o serviço do My Company AI'); const s = await client.request<ServiceStatus>({ type: 'service.status' }, 15_000); store.set(st => ({ ...st, serviceStatus: s })); }}
         onServicePause={paused => { if (client) safe(() => client.send({ type: 'service.pause', paused })); }}
-        onServiceAutostart={async enabled => { if (!client) throw new Error('sem conexão com o serviço da MilWeb HQ'); const s = await client.request<ServiceStatus>({ type: 'service.autostart', enabled }, 60_000); store.set(st => ({ ...st, serviceStatus: s })); }}
+        onServiceAutostart={async enabled => { if (!client) throw new Error('sem conexão com o serviço do My Company AI'); const s = await client.request<ServiceStatus>({ type: 'service.autostart', enabled }, 60_000); store.set(st => ({ ...st, serviceStatus: s })); }}
         onServiceOpenLogs={() => { if (client) safe(() => client.send({ type: 'service.openLogs' })); }}
         onServiceShutdown={() => { if (client) safe(() => client.send({ type: 'service.shutdown' })); }}
-        onDataInfo={() => (client ? client.request<DataInfo>({ type: 'service.dataInfo' }, 20_000) : Promise.reject(new Error('sem conexão com o serviço da MilWeb HQ')))}
-        onBackupNow={() => (client ? client.request<{ file: string; info: DataInfo }>({ type: 'service.backupNow' }, 120_000) : Promise.reject(new Error('sem conexão com o serviço da MilWeb HQ')))}
+        onDataInfo={() => (client ? client.request<DataInfo>({ type: 'service.dataInfo' }, 20_000) : Promise.reject(new Error('sem conexão com o serviço do My Company AI')))}
+        onBackupNow={() => (client ? client.request<{ file: string; info: DataInfo }>({ type: 'service.backupNow' }, 120_000) : Promise.reject(new Error('sem conexão com o serviço do My Company AI')))}
+        onCompanyName={saveCompanyName}
         onSave={patch => { if (client) safe(() => client.send({ type: 'settings.update', patch })); setDialog({ kind: 'none' }); }} onCancel={() => setDialog({ kind: 'none' })} />
 
       <AddSkillDialog
         open={dialog.kind === 'addSkill'} projects={visibleProjects} defaultProjectId={dialog.kind === 'addSkill' ? dialog.projectId : null}
-        onInspect={path => (client ? client.request<SkillInspection>({ type: 'skills.inspectLocal', path }, 30_000) : Promise.reject(new Error('sem conexão com o serviço da MilWeb HQ')))}
-        onAdd={(path, scope, projectId) => (client ? client.request<SkillAddResult>({ type: 'skills.addLocal', path, scope, projectId }, 60_000) : Promise.reject(new Error('sem conexão com o serviço da MilWeb HQ')))}
+        onInspect={path => (client ? client.request<SkillInspection>({ type: 'skills.inspectLocal', path }, 30_000) : Promise.reject(new Error('sem conexão com o serviço do My Company AI')))}
+        onAdd={(path, scope, projectId) => (client ? client.request<SkillAddResult>({ type: 'skills.addLocal', path, scope, projectId }, 60_000) : Promise.reject(new Error('sem conexão com o serviço do My Company AI')))}
         onDone={r => { setDialog({ kind: 'none' }); notify('info', `Skill /${r.info.invocation} adicionada em ${r.destination}.`); loadCatalog(r.info.projectId ?? null, true); }}
         onCancel={() => setDialog({ kind: 'none' })}
       />
       <OnboardingDialog
+        companyName={companyName}
         open={onboardingOpen} ai={state.ai} projects={state.projects} employees={state.employees}
         onOpenConnections={() => setDialog({ kind: 'settings', tab: 'ai' })}
         onAddProject={() => setDialog({ kind: 'project', roomId: selectedRoomId })}
@@ -1513,6 +1532,7 @@ function ConnectedApp({ token }: { token: string }) {
       )}
       <Toasts notices={state.notices} onDismiss={dismissNotice} />
     </div>
+    </>
   );
 }
 

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Contrato compartilhado (domínio + mensagens WebSocket) da MilWeb HQ",
+  "description": "Contrato compartilhado (domínio + mensagens WebSocket) do My Company AI",
   "main": "./src/index.ts",
   "exports": { ".": "./src/index.ts" },
   "scripts": { "typecheck": "tsc --noEmit" },

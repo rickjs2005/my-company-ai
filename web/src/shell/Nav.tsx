@@ -29,7 +29,7 @@ export function Nav({ view, onView, onOpenSettings, waiting, trashCount, meeting
   const teamBadge = waiting + attention;
   return (
     <nav className="hq-nav" aria-label="Navegação principal">
-      <div className="hq-nav__brand" title="MilWeb HQ"><span className="pixel">HQ</span></div>
+      <div className="hq-nav__brand" title="My Company AI"><span className="pixel">HQ</span></div>
       <ul className="hq-nav__list">
         {ITEMS.map(it => {
           const on = view === it.id || Boolean(it.also?.includes(view));

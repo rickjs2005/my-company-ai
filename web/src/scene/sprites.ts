@@ -1,4 +1,4 @@
-// Pixel art procedural da MilWeb HQ (v2). Nenhum asset externo: cada sprite é uma matriz de caracteres
+// Pixel art procedural do My Company AI (v2). Nenhum asset externo: cada sprite é uma matriz de caracteres
 // (uma linha por fileira de pixels) e cada caractere é uma cor da paleta. As matrizes viram canvases
 // offscreen cacheados por zoom (ver SpriteCache). Paleta: tons escuros, madeira e âmbar.
 // Personagens 20x28 (cabeça 20x12 + corpo 20x16), 4 direções, andar, sentado e poses.

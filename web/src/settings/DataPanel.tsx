@@ -62,7 +62,7 @@ export function DataPanel({ load, backupNow }: { load(): Promise<DataInfo>; back
             <summary>Como restaurar um backup</summary>
             <ol>
               <li>Encerre a HQ (Ajustes → Conexões → Encerrar HQ).</li>
-              <li>Na pasta da MilWeb HQ, rode o comando abaixo. Ele confere o backup (integridade e relações entre conversas, tarefas e reuniões) e guarda o banco atual antes de trocar.</li>
+              <li>Na pasta do My Company AI, rode o comando abaixo. Ele confere o backup (integridade e relações entre conversas, tarefas e reuniões) e guarda o banco atual antes de trocar.</li>
               <li>Abra a HQ de novo pelo <span className="hq-mono">start-hq.cmd</span>.</li>
             </ol>
             <code className="hq-data__cmd">{restoreCmd}</code>

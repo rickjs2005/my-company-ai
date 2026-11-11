@@ -1,4 +1,4 @@
-// Entrada do serviço local da MilWeb HQ.
+// Entrada do serviço local do My Company AI.
 // Ordem importa: primeiro a porta (se outra HQ já estiver rodando, reaproveitamos a instância e NÃO tocamos no banco dela),
 // depois o banco (migração com backup), os processos e o WebSocket.
 import { loadConfig } from './config.js';
@@ -47,7 +47,7 @@ export const APP_ID = 'milweb-hq';
 
 interface HealthInfo { app?: string; version?: string; pid?: number }
 
-/** Pergunta a quem está na porta se é uma MilWeb HQ (GET /api/health). null = não respondeu como HQ. */
+/** Pergunta a quem está na porta se é um My Company AI (GET /api/health). null = não respondeu como HQ. */
 async function probeExisting(host: string, port: number): Promise<HealthInfo | null> {
   try {
     const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 2500);
@@ -65,7 +65,7 @@ async function main() {
   const startedAt = Date.now();
   const wantOpen = process.argv.includes('--open') && process.env.MILWEB_HQ_NO_OPEN !== '1';
   const url = `http://${cfg.host}:${cfg.port}/#token=${cfg.token}`; // o token só vai para o navegador e para o terminal do Chefe, nunca para o log
-  log.info(`MilWeb HQ v${cfg.version} iniciando · dados em ${cfg.dataDir}`);
+  log.info(`My Company AI v${cfg.version} iniciando · dados em ${cfg.dataDir}`);
 
   let claude: ClaudeInfo = { exePath: null, version: null, authOk: null, authDetail: 'verificando…', apiKeyInEnv: Boolean(process.env.ANTHROPIC_API_KEY) };
   // Retorno do login das redes (a página HTTPS da Aurora repassa para cá). Ligado depois que o serviço social sobe.
@@ -108,13 +108,13 @@ async function main() {
     if ((err as NodeJS.ErrnoException).code === 'EADDRINUSE') {
       const other = await probeExisting(cfg.host, cfg.port);
       if (other?.app === APP_ID) {
-        log.info(`a MilWeb HQ já está em execução em http://${cfg.host}:${cfg.port} (v${other.version ?? '?'}${other.pid ? `, pid ${other.pid}` : ''}); reaproveitando essa instância`);
-        console.log(`[MilWeb HQ] Ja esta em execucao em http://${cfg.host}:${cfg.port}. Usando essa instancia (nenhum segundo servico foi iniciado).`);
+        log.info(`o My Company AI já está em execução em http://${cfg.host}:${cfg.port} (v${other.version ?? '?'}${other.pid ? `, pid ${other.pid}` : ''}); reaproveitando essa instância`);
+        console.log(`[My Company AI] Ja esta em execucao em http://${cfg.host}:${cfg.port}. Usando essa instancia (nenhum segundo servico foi iniciado).`);
         if (wantOpen) { try { openExternal('url', url); } catch (e) { log.warn('não abriu o navegador', e); } }
         if (process.argv.includes('--print-url')) console.log(url);
         process.exit(0);
       }
-      log.error(`a porta ${cfg.port} está ocupada por outro programa (não é uma MilWeb HQ). Feche-o ou defina MILWEB_HQ_PORT com outra porta, ex.: 4778.`);
+      log.error(`a porta ${cfg.port} está ocupada por outro programa (não é um My Company AI). Feche-o ou defina MILWEB_HQ_PORT com outra porta, ex.: 4778.`);
       process.exit(2);
     }
     throw err;
