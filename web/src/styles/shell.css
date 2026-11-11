@@ -1,0 +1,141 @@
+/* Casca v2 da MilWeb HQ: cabeçalho discreto, navegação compacta, palco, painel recolhível, barra de chat, vistas. */
+
+.hq-app { min-width: 1024px; }
+/* Navegação na altura toda; à direita, a área de trabalho (palco + painel) com o compositor embaixo. Antes o compositor
+   passava por baixo da navegação e, em telas baixas (1366×768, ou 1920×1080 com escala de 125%), escondia "Ajustes". */
+.hq-app__work { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.hq-app__row { flex: 1; min-height: 0; display: flex; }
+
+/* Rodapé dos diálogos longos (Modo ausente, Ajustes, Funcionário) fica visível enquanto o conteúdo rola. */
+.hq-dialog__body > .hq-actions--end:last-child, .hq-dialog__body > form > .hq-actions--end:last-child {
+  position: sticky; bottom: -16px; z-index: 1; margin-bottom: -16px; padding: 10px 0 16px; background: var(--bg-panel); border-top: 1px solid var(--border);
+}
+
+/* ---------- Cabeçalho ---------- */
+.hq-top { height: 42px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 14px 0 12px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #fff6ea 0%, var(--bg-panel) 100%); font-size: 12.5px; }
+.hq-top__brand { display: flex; align-items: center; }
+.hq-top__logo { color: var(--amber); font-size: 10px; text-shadow: 0 2px 0 rgba(240, 168, 48, 0.25); }
+.hq-top__context { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.hq-top__project { background: none; border: 1px solid transparent; border-radius: 6px; padding: 3px 8px; color: var(--text); display: inline-flex; gap: 6px; align-items: center; max-width: 360px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hq-top__project:hover { border-color: var(--border); background: var(--bg-elev); }
+.hq-top__spacer { flex: 1; }
+.hq-top__me { display: inline-flex; align-items: center; gap: 8px; background: none; border: 1px solid transparent; border-radius: 999px; padding: 3px 10px 3px 4px; color: var(--text); }
+.hq-top__me:hover { border-color: var(--border); background: var(--bg-elev); }
+.hq-conn--wait { color: var(--warn); }
+.hq-conn--wait .hq-conn__dot { background: var(--warn); animation: hq-pulse 1.2s ease-out infinite; }
+.hq-conn .hq-linkbtn { font-size: 11.5px; }
+
+/* ---------- Navegação ---------- */
+.hq-nav { width: 70px; flex: none; display: flex; flex-direction: column; align-items: stretch; gap: 2px; padding: 8px 6px; background: var(--bg-panel); border-right: 1px solid var(--border); }
+.hq-nav__brand { display: flex; justify-content: center; padding: 4px 0 8px; color: var(--amber-dim); }
+.hq-nav__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.hq-nav__item { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 2px 6px; border-radius: 8px; border: 1px solid transparent; background: none; color: var(--text-dim); font-size: 10.5px; font-weight: 500; line-height: 1.1; }
+.hq-nav__item:hover { background: var(--bg-elev); color: var(--text); }
+.hq-nav__item--on { background: var(--bg-elev); border-color: var(--border); color: var(--amber); }
+.hq-nav__icon { display: inline-flex; }
+.hq-nav__badge { position: absolute; top: 4px; right: 8px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: var(--warn); color: #1a1408; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+.hq-nav__badge--dim { background: var(--border-strong); color: var(--text); }
+.hq-nav__new { margin-top: 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 2px; border-radius: 8px; border: 1px dashed var(--amber-dim); background: none; color: var(--amber); font-size: 10.5px; font-weight: 600; }
+.hq-nav__new:hover { background: var(--amber-glow); }
+.hq-nav__task { margin: 2px 0 8px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 2px 7px; border-radius: 8px; border: 1px solid var(--amber-dim); background: linear-gradient(180deg, rgba(240, 168, 48, 0.22), rgba(240, 168, 48, 0.08)); color: var(--amber); font-size: 10.5px; font-weight: 700; line-height: 1.1; }
+.hq-nav__task:hover { background: var(--amber-glow); border-color: var(--amber); }
+.hq-nav__task:focus-visible { outline: 2px solid var(--amber); outline-offset: 1px; }
+.hq-nav__spacer { flex: 1; }
+.hq-nav__item--foot { margin-bottom: 2px; }
+
+/* ---------- Palco ---------- */
+.hq-stage { display: block; }
+.hq-stage__hud { position: absolute; left: 14px; top: 12px; z-index: 2; display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
+.hq-stage__where { font-size: 12px; color: var(--text-dim); background: rgba(255, 251, 246, 0.94); padding: 4px 9px; border-radius: 6px; display: inline-flex; gap: 6px; align-items: center; }
+.hq-stage__where strong { color: var(--text); font-weight: 600; }
+.hq-stage__interact { font-size: 12.5px; color: #1a1408; background: var(--amber); padding: 5px 10px; border-radius: 6px; font-weight: 600; display: inline-flex; gap: 8px; align-items: center; box-shadow: var(--shadow); animation: hq-toast-in 0.15s ease-out; }
+.hq-stage__key { font-family: var(--font-mono); font-size: 11px; background: rgba(58, 47, 61, 0.12); padding: 1px 6px; border-radius: 4px; }
+.hq-stage__tools { display: flex; gap: 6px; align-items: center; }
+.hq-stage__tools .hq-btn { background: rgba(255, 251, 246, 0.94); backdrop-filter: blur(4px); }
+.hq-stage__tools .hq-btn--on { border-color: var(--amber); color: var(--amber); }
+.hq-minimap { position: absolute; right: 14px; bottom: 12px; z-index: 2; border: 1px solid var(--border-strong); border-radius: 8px; box-shadow: var(--shadow); cursor: crosshair; image-rendering: auto; }
+.hq-stage__hint { bottom: 12px; max-width: 46%; }
+.hq-stage--dim .hq-stage__canvas { filter: saturate(0.35) brightness(0.55); }
+.hq-offline { position: absolute; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center; background: rgba(10, 8, 12, 0.45); }
+.hq-offline__card { width: 440px; max-width: calc(100% - 40px); background: var(--bg-panel); border: 1px solid rgba(227, 106, 90, 0.5); border-radius: 12px; padding: 20px 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px; }
+.hq-offline__title { margin: 0; font-weight: 700; font-size: 15px; color: var(--danger); }
+.hq-offline__card p { margin: 0; font-size: 13px; }
+.hq-offline__card code { font-family: var(--font-mono); background: var(--bg-input); padding: 1px 5px; border-radius: 4px; }
+.hq-offline__card .hq-btn { align-self: flex-start; margin-top: 4px; }
+
+/* ---------- Painel recolhido ---------- */
+.hq-panel-tab { flex: none; width: 34px; border-left: 1px solid var(--border); background: var(--bg-panel); display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 10px; }
+.hq-panel-tab__btn { background: none; border: none; color: var(--text-dim); writing-mode: vertical-rl; transform: rotate(180deg); font-size: 12px; font-weight: 600; padding: 8px 4px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; }
+.hq-panel-tab__btn:hover { background: var(--bg-elev); color: var(--text); }
+.hq-panel-tab .hq-status-dot { width: 9px; height: 9px; }
+
+/* ---------- Painel: conversas e seções ---------- */
+.hq-panel__convs { display: flex; gap: 6px; align-items: center; margin-top: 8px; }
+.hq-select--grow { flex: 1; min-width: 0; display: flex; }
+.hq-select--grow select { width: 100%; max-width: none; }
+.hq-panel__body--scroll { overflow: auto; padding: 4px 14px 16px; display: block; }
+.hq-section { margin-top: 10px; }
+.hq-panel--room .hq-empty { padding: 6px 2px; text-align: left; }
+
+/* ---------- Barra de chat ---------- */
+.hq-chatbar { flex: none; display: flex; align-items: center; gap: 8px; padding: 7px 12px; border-top: 1px solid var(--border); background: var(--bg-panel); }
+.hq-chatbar__who { position: relative; }
+.hq-chatbar__pick { display: inline-flex; align-items: center; gap: 7px; background: var(--bg-input); border: 1px solid var(--border-strong); border-radius: 8px; padding: 7px 10px; color: var(--text); font-size: 13px; white-space: nowrap; max-width: 280px; }
+.hq-chatbar__pick:hover { border-color: var(--amber-dim); }
+.hq-chatbar__caret { color: var(--text-faint); font-size: 11px; }
+.hq-chatbar__input { flex: 1; min-width: 0; background: var(--bg-input); border: 1px solid var(--border-strong); border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: 13.5px; }
+.hq-chatbar__input:focus { outline: none; border-color: var(--amber-dim); }
+.hq-chatbar__input:disabled { color: var(--text-faint); }
+.hq-menu { position: absolute; left: 0; min-width: 300px; max-width: 420px; max-height: 320px; overflow: auto; list-style: none; margin: 0; padding: 6px; background: var(--bg-elev); border: 1px solid var(--border-strong); border-radius: 8px; box-shadow: var(--shadow); z-index: 30; }
+.hq-menu--up { bottom: calc(100% + 6px); }
+.hq-menu__item { width: 100%; display: flex; align-items: center; gap: 8px; background: none; border: 1px solid transparent; border-radius: 6px; padding: 6px 8px; color: var(--text); text-align: left; font-size: 13px; }
+.hq-menu__item:hover { background: var(--bg-panel); }
+.hq-menu__item--on { border-color: var(--amber-dim); }
+.hq-menu__text { display: flex; flex-direction: column; min-width: 0; }
+.hq-menu__sub { font-size: 11.5px; }
+.hq-menu__empty { padding: 8px; font-size: 12.5px; color: var(--text-dim); }
+
+/* ---------- Vistas (Equipe, Projetos, Arquivos, Lixeira) ---------- */
+.hq-view-host { position: absolute; inset: 0; z-index: 4; background: var(--bg); display: flex; flex-direction: column; min-height: 0; }
+.hq-view { flex: 1; min-height: 0; overflow: auto; padding: 16px 22px 24px; display: flex; flex-direction: column; gap: 12px; }
+.hq-view__head { display: flex; align-items: center; gap: 12px; }
+.hq-view__head h2 { margin: 0; font-size: 17px; font-weight: 700; }
+.hq-view__spacer { flex: 1; }
+.hq-view__sub { margin: 14px 0 4px; font-size: 13px; font-weight: 600; }
+.hq-view__note { margin: 0; font-size: 12.5px; color: var(--text-dim); border-left: 3px solid var(--amber-dim); padding-left: 10px; }
+.hq-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.hq-table th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-faint); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.hq-table td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.hq-table__row--sel td { background: rgba(240, 168, 48, 0.06); }
+.hq-table__actions { text-align: right; white-space: nowrap; }
+.hq-table__actions .hq-btn, .hq-table__actions .hq-iconbtn { margin-left: 4px; vertical-align: middle; }
+.hq-table__name { display: inline-flex; align-items: center; gap: 10px; background: none; border: none; color: var(--text); text-align: left; padding: 0; font-size: 13px; }
+.hq-table__name:hover strong { color: var(--amber); }
+.hq-table__sub { display: block; font-size: 11.5px; }
+.hq-input--sm { padding: 4px 8px; font-size: 12.5px; width: auto; }
+.hq-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.hq-list__item { display: flex; align-items: center; gap: 8px; padding: 5px 6px; border-radius: 6px; font-size: 13px; }
+.hq-list__item--task { align-items: flex-start; }
+.hq-list__btn { flex: 1; display: flex; align-items: center; gap: 8px; background: none; border: 1px solid transparent; border-radius: 6px; padding: 4px 6px; color: var(--text); text-align: left; }
+.hq-list__btn:hover { background: var(--bg-elev); border-color: var(--border); }
+.hq-list__text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.hq-list__sub { font-size: 11.5px; }
+.hq-status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none; vertical-align: middle; margin-right: 2px; }
+.hq-avatar { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(180deg, var(--skin, #d9a577) 0 48%, var(--shirt, #f0a830) 48% 100%); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35); flex: none; image-rendering: pixelated; }
+.hq-avatar--me { --skin: #d9a577; --shirt: #e3e0d8; }
+.hq-form__row--3 { grid-template-columns: 1fr 1fr 1fr; }
+.hq-status--stale { opacity: 0.6; }
+
+/* Botão "Mesa" na barra do topo: contador de entregas novas, perguntas e bloqueios */
+.hq-top__desk { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--border-strong); background: transparent; color: var(--text); font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.hq-top__desk:hover { border-color: var(--amber-dim); }
+.hq-top__desk--on { border-color: var(--amber-dim); color: var(--amber); }
+.hq-top__desk-count { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--amber); color: #1a1408; font-size: 11px; font-weight: 800; }
+
+/* Painel lateral em altura total (10/11/2026, chat "igual WhatsApp"): o compositor de baixo fica só sob o palco e a conversa do
+   funcionário (ou a Mesa) ganha a altura inteira da tela. Sem painel aberto, a coluna da direita some e nada muda. */
+.hq-app__work { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: minmax(0, 1fr) auto; }
+.hq-app__row { display: contents; }
+.hq-app__row > main { grid-column: 1; grid-row: 1; min-width: 0; min-height: 0; }
+.hq-app__row > aside { grid-column: 2; grid-row: 1 / span 2; min-height: 0; }
+.hq-composer-host > .hq-composer { grid-column: 1; grid-row: 2; min-width: 0; }

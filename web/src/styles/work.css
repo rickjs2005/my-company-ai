@@ -1,0 +1,92 @@
+/* v4: Rotinas, Modo ausente e o selo do modo ausente no cabeçalho. Mesmos tokens do resto da interface. */
+.hq-routines__lead { margin: 6px 0 14px; max-width: 900px; font-size: 13px; line-height: 1.5; }
+.hq-routines__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.hq-routine { display: flex; gap: 16px; align-items: flex-start; padding: 12px 14px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; }
+.hq-routine--off { opacity: 0.7; }
+.hq-routine__main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.hq-routine__title { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hq-routine__prompt { font-size: 13px; color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 4.6em; overflow: hidden; }
+.hq-routine__meta { font-size: 12px; }
+.hq-routine__times { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12px; }
+.hq-routine__skip { font-size: 12px; color: var(--amber); }
+.hq-routine__actions { display: flex; flex-direction: column; align-items: stretch; gap: 6px; flex: 0 0 auto; }
+.hq-routines__days { display: flex; gap: 12px; flex-wrap: wrap; margin: -4px 0 10px; }
+
+.hq-absence__lead { margin: 0 0 10px; font-size: 13px; line-height: 1.5; }
+.hq-absence__switch { margin-bottom: 12px; }
+.hq-absence__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.hq-absence__box { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px 10px; margin: 0; display: flex; flex-direction: column; gap: 4px; max-height: 180px; overflow: auto; }
+.hq-absence__box legend { padding: 0 4px; font-size: 12px; font-weight: 600; color: var(--text-dim); }
+.hq-absence__summary { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 4px; }
+.hq-absence__facts { display: grid; grid-template-columns: 120px 1fr; gap: 6px 12px; margin: 8px 0 0; font-size: 13px; }
+.hq-absence__facts dt { color: var(--text-dim); }
+.hq-absence__facts dd { margin: 0; display: flex; flex-direction: column; gap: 3px; }
+.hq-absence__machine { margin: 12px 0 4px; font-size: 13px; }
+.hq-absence__machine summary { cursor: pointer; color: var(--text-dim); }
+.hq-absence__table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
+.hq-absence__table th, .hq-absence__table td { text-align: left; vertical-align: top; padding: 5px 8px; border-bottom: 1px solid var(--border); }
+.hq-absence__table th { color: var(--text-dim); font-weight: 600; }
+.hq-absence__table td:last-child { white-space: nowrap; }
+
+.hq-top__away { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border-strong); background: transparent; color: var(--text-dim); font: inherit; font-size: 12px; cursor: pointer; }
+.hq-top__away:hover { color: var(--text); border-color: var(--amber-dim); }
+.hq-top__away--on { color: #1a1206; background: var(--amber); border-color: var(--amber); font-weight: 600; }
+.hq-top__away--on:hover { color: #1a1206; }
+.hq-top__away:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+@media (max-width: 760px) { .hq-absence__grid { grid-template-columns: 1fr; } .hq-routine { flex-direction: column; } .hq-routine__actions { flex-direction: row; flex-wrap: wrap; } }
+
+/* Navegação com "Rotinas": em telas baixas (1366×768) os itens ficam mais justos para Ajustes continuar visível; rolagem só de segurança. */
+.hq-nav { overflow-y: auto; scrollbar-width: none; }
+.hq-nav::-webkit-scrollbar { display: none; }
+@media (max-height: 860px) {
+  .hq-nav__item { padding: 5px 2px 4px; gap: 1px; }
+  .hq-nav__task { margin: 0 0 4px; padding: 6px 2px 5px; }
+  .hq-nav__new { margin-top: 4px; padding: 5px 2px; }
+  .hq-nav__brand { padding: 2px 0 4px; }
+}
+
+/* Atalhos da cena na barra de status (antes ficavam por cima do mapa). */
+.hq-status__hint { color: var(--text-faint); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; margin-right: 12px; }
+
+/* Marco 1: armário de projetos e busca rápida (Ctrl+K). */
+.hq-cab { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 16px; min-height: 360px; }
+.hq-cab__list { display: flex; flex-direction: column; gap: 8px; min-width: 0; border-right: 1px solid var(--border); padding-right: 12px; }
+.hq-cab__items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; max-height: 52vh; }
+.hq-cab__item { display: flex; align-items: center; gap: 4px; border: 1px solid transparent; border-radius: 8px; }
+.hq-cab__item--on { border-color: var(--amber-dim); background: var(--amber-glow); }
+.hq-cab__star { background: none; border: none; color: var(--amber); font-size: 15px; cursor: pointer; padding: 4px 6px; }
+.hq-cab__pick { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; background: none; border: none; color: var(--text); text-align: left; padding: 6px 4px; cursor: pointer; font-size: 13px; }
+.hq-cab__pick strong, .hq-cab__pick span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hq-cab__pick span { font-size: 11.5px; }
+.hq-cab__empty { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.hq-cab__detail { display: flex; flex-direction: column; gap: 8px; min-width: 0; font-size: 13px; }
+.hq-cab__head { display: flex; align-items: center; gap: 8px; }
+.hq-cab__head h3 { margin: 0; font-size: 16px; }
+.hq-cab__path { font-size: 11.5px; overflow-wrap: anywhere; }
+.hq-cab__client { max-width: 340px; }
+.hq-cab__sub { font-size: 12px; margin-top: 2px; }
+.hq-cab__files { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; max-height: 180px; overflow-y: auto; }
+.hq-cab__files .hq-check { display: flex; align-items: center; gap: 6px; font-size: 12.5px; }
+@media (max-width: 900px) { .hq-cab { grid-template-columns: 1fr; } .hq-cab__list { border-right: none; padding-right: 0; } }
+
+.hq-qs { width: 640px; max-width: calc(100vw - 32px); padding: 0; margin-top: 10vh; }
+.hq-qs__inner { display: flex; flex-direction: column; }
+.hq-qs__input { margin: 12px; font-size: 14px; padding: 10px 12px; }
+.hq-qs__list { list-style: none; margin: 0; padding: 0 6px 6px; max-height: 56vh; overflow-y: auto; }
+.hq-qs__group { font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-faint); padding: 8px 8px 4px; }
+.hq-qs__item { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; background: none; border: 1px solid transparent; border-radius: 8px; padding: 7px 10px; color: var(--text); text-align: left; cursor: pointer; }
+.hq-qs__item--on { background: var(--bg-elev); border-color: var(--amber-dim); }
+.hq-qs__label { font-size: 13.5px; font-weight: 600; }
+.hq-qs__sub { font-size: 12px; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.hq-qs__empty { padding: 14px 10px; color: var(--text-dim); font-size: 13px; }
+.hq-qs__foot { border-top: 1px solid var(--border); padding: 7px 12px; font-size: 11.5px; color: var(--text-faint); }
+.hq-top__search { display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg-input); color: var(--text-dim); font: inherit; font-size: 12.5px; cursor: pointer; min-width: 200px; }
+.hq-top__search:hover { color: var(--text); border-color: var(--amber-dim); }
+.hq-top__search kbd { margin-left: auto; font-family: var(--font-mono); font-size: 10.5px; padding: 1px 5px; border: 1px solid var(--border-strong); border-radius: 4px; color: var(--text-faint); }
+.hq-task__applied { display: flex; flex-wrap: wrap; gap: 3px 10px; margin-top: 4px; }
+.hq-task__ctx { font-size: 12px; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; margin-top: 2px; }
+.hq-task__ctxfile { font-size: 11.5px; color: var(--text); }
+/* Prévia: no painel estreito do funcionário o campo da URL ganha a linha inteira e os botões descem (antes ficava "htt"). */
+.hq-previewbox__row { flex-wrap: wrap; }
+.hq-previewbox__row .hq-input { flex: 1 1 100%; min-width: 0; }

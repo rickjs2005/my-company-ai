@@ -1,0 +1,23 @@
+{
+  "name": "@milweb-hq/claude-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Controle do Claude Code real (CLI instalado, modo -p stream-json) e normalização de eventos em estados do funcionário",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./activity": "./src/activity.ts",
+    "./types": "./src/types.ts"
+  },
+  "scripts": {
+    "test": "node --import tsx --test test/*.test.ts",
+    "test:real": "node --import tsx --test test/real-cli.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}

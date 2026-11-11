@@ -1,0 +1,98 @@
+/* Área "Skills" (catálogo de skills do Claude Code). Usa os tokens de base.css e os átomos de panel.css/shell.css.
+   Prefixo hq-skills-. Layout: cabeçalho + filtros em cima; embaixo duas colunas (lista rolável | detalhes roláveis).
+   Legível em 1366×768: o painel de detalhes tem no mínimo 380 px e só a lista/detalhes rolam, não a página. */
+
+.hq-skills { gap: 10px; }
+.hq-skills__intro { margin: 0; }
+
+/* ---------- Filtros ---------- */
+.hq-skills-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.hq-skills-bar__search { flex: 1 1 220px; min-width: 180px; max-width: 360px; }
+.hq-skills-bar .hq-input--sm { width: auto; max-width: 220px; }
+.hq-skills-bar .hq-check { font-size: 12.5px; color: var(--text-dim); white-space: nowrap; }
+.hq-skills-bar__sep { width: 1px; height: 22px; background: var(--border); flex: none; }
+.hq-skills-bar__spacer { flex: 1 0 0; }
+
+/* ---------- Corpo em duas colunas ---------- */
+.hq-skills-body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(300px, 1fr) minmax(380px, 1.25fr); gap: 12px; }
+.hq-skills-body--single { grid-template-columns: 1fr; }
+
+.hq-skills-list { list-style: none; margin: 0; padding: 4px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-elev); overflow-y: auto; overflow-x: hidden; min-height: 0; display: flex; flex-direction: column; gap: 3px; }
+.hq-skills-list .hq-empty { margin: auto 0; }
+
+.hq-skills-row { position: relative; display: flex; align-items: stretch; min-width: 0; }
+.hq-skills-item { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; text-align: left; padding: 8px 40px 8px 10px; border-radius: 6px; border: 1px solid transparent; background: transparent; color: var(--text); }
+.hq-skills-item:hover { background: var(--bg-panel); border-color: var(--border); }
+.hq-skills-item:focus-visible { outline: 2px solid var(--amber); outline-offset: -2px; }
+.hq-skills-item--sel { background: var(--bg-panel); border-color: var(--amber-dim); box-shadow: inset 3px 0 0 var(--amber); }
+.hq-skills-item--off { opacity: 0.6; }
+.hq-skills-item__top { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.hq-skills-item__name { font-weight: 600; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hq-skills-item__inv { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hq-skills-item__desc { margin: 0; font-size: 12.5px; color: var(--text-dim); line-height: 1.4; }
+.hq-skills-item__tags { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.hq-skills-star { position: absolute; top: 6px; right: 6px; color: var(--text-faint); }
+.hq-skills-star[aria-pressed="true"] { color: var(--amber); }
+.hq-skills-star:hover:not(:disabled) { color: var(--amber); }
+
+/* ---------- Painel de detalhes ---------- */
+.hq-skills-detail { min-width: 0; min-height: 0; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-elev); padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+.hq-skills-detail--empty { align-items: center; justify-content: center; }
+.hq-skills-detail__head { display: flex; flex-direction: column; gap: 6px; }
+.hq-skills-detail__head h3 { margin: 0; font-size: 16px; font-weight: 700; }
+.hq-skills-detail__inv { font-size: 12.5px; color: var(--amber); }
+.hq-skills-detail__tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.hq-skills-detail__desc { margin: 0; font-size: 13px; line-height: 1.5; }
+
+.hq-skills-sec { display: flex; flex-direction: column; gap: 4px; }
+.hq-skills-sec__k { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-faint); font-weight: 600; }
+.hq-skills-sec p { margin: 0; font-size: 13px; line-height: 1.45; }
+.hq-skills-sec ul { margin: 0; padding-left: 18px; font-size: 12.5px; }
+.hq-skills-sec .hq-notice { margin: 2px 0; }
+
+.hq-skills-example { display: block; font-family: var(--font-mono); font-size: 12.5px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; color: var(--text); word-break: break-word; }
+
+.hq-skills-avail { display: flex; flex-direction: column; gap: 5px; }
+.hq-skills-avail__line { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; }
+.hq-skills-avail__line .hq-tag { flex: none; margin-top: 1px; }
+.hq-skills-avail__line .hq-dim { min-width: 0; }
+
+.hq-skills-detail__actions { margin-top: 2px; align-items: center; }
+
+/* Seções recolhíveis (detalhes técnicos, avisos da varredura). */
+.hq-skills-fold { border-top: 1px dashed var(--border); padding-top: 8px; }
+.hq-skills-fold__head { display: flex; align-items: center; gap: 6px; width: 100%; background: none; border: none; padding: 4px 0; color: var(--text-dim); font-size: 12.5px; font-weight: 600; text-align: left; }
+.hq-skills-fold__head:hover { color: var(--text); }
+.hq-skills-fold__head .hq-dim { font-weight: 400; }
+.hq-skills-fold__body { padding: 6px 0 2px; display: flex; flex-direction: column; gap: 8px; }
+
+.hq-skills-facts { display: grid; grid-template-columns: max-content 1fr; gap: 5px 12px; margin: 0; font-size: 12.5px; }
+.hq-skills-facts dt { color: var(--text-faint); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding-top: 2px; white-space: nowrap; }
+.hq-skills-facts dd { margin: 0; min-width: 0; word-break: break-word; }
+.hq-skills-facts .hq-actions { margin-top: 4px; }
+.hq-skills-path { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.hq-skills-path .hq-mono { font-size: 11.5px; word-break: break-all; }
+
+.hq-skills-detail .hq-pre { max-height: 420px; font-family: var(--font-mono); font-size: 12px; }
+
+/* Rodapé técnico da vista (raízes varridas). */
+.hq-skills-roots { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; font-size: 12px; }
+.hq-skills-roots li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.hq-skills-roots .hq-mono { font-size: 11.5px; color: var(--text-dim); word-break: break-all; }
+
+/* ---------- Diálogo "Adicionar skill local" ---------- */
+.hq-skills-add { display: flex; flex-direction: column; gap: 12px; }
+.hq-skills-add__row { display: flex; gap: 8px; align-items: flex-end; }
+.hq-skills-add__row .hq-field { flex: 1; }
+.hq-skills-add__summary { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-elev); padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.hq-skills-add__summary h3 { margin: 0; font-size: 14px; }
+.hq-skills-add__files { margin: 0; padding: 0; list-style: none; max-height: 120px; overflow: auto; font-size: 12px; display: flex; flex-direction: column; gap: 2px; }
+.hq-skills-add .hq-pre { max-height: 260px; font-family: var(--font-mono); font-size: 12px; }
+.hq-skills-add__scope { display: flex; flex-direction: column; gap: 6px; }
+.hq-skills-add__scope .hq-check { font-size: 13px; }
+.hq-skills-add__scope .hq-input { margin-left: 26px; width: calc(100% - 26px); }
+
+@media (max-width: 1100px) {
+  .hq-skills-body { grid-template-columns: minmax(260px, 1fr) minmax(380px, 1fr); }
+}

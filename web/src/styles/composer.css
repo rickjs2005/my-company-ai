@@ -1,0 +1,98 @@
+/* Compositor único "O que vamos fazer?" (base da tela): pedido, projeto, funcionário, skill, opções e Executar tarefa. */
+
+.hq-composer { flex: none; display: flex; flex-direction: column; gap: 6px; padding: 8px 12px 8px; border-top: 1px solid var(--border); background: var(--bg-panel); }
+.hq-composer__row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.hq-composer__row--text { flex-wrap: nowrap; align-items: flex-start; }
+.hq-composer__title { flex: none; font-weight: 600; font-size: 13px; color: var(--amber); padding-top: 9px; white-space: nowrap; }
+.hq-composer__text { flex: 1; min-width: 0; resize: none; min-height: 38px; max-height: 136px; line-height: 20px; padding: 8px 12px; background: var(--bg-input); border: 1px solid var(--border-strong); border-radius: 8px; color: var(--text); font-size: 13.5px; overflow-y: auto; }
+.hq-composer__text:focus { outline: none; border-color: var(--amber); box-shadow: 0 0 0 2px var(--amber-glow); }
+.hq-composer__text::placeholder { color: var(--text-faint); }
+
+.hq-composer__field { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.hq-composer__label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-faint); white-space: nowrap; }
+.hq-composer__select { max-width: 230px; min-width: 150px; text-overflow: ellipsis; }
+.hq-composer__field--skill .hq-composer__select { max-width: 260px; }
+.hq-composer__skillsearch { width: 150px; padding: 5px 8px; font-size: 12.5px; }
+.hq-composer__skillslink { font-size: 12px; white-space: nowrap; }
+/* A sugestão ocupa o espaço que sobra na linha (base 150 px, até 360 px): assim a linha não quebra só por causa dela. */
+.hq-composer__suggest { flex: 1 1 150px; display: inline-flex; align-items: center; gap: 6px; min-width: 0; background: none; border: 1px dashed var(--amber-dim); border-radius: 999px; padding: 3px 10px 3px 6px; color: var(--text); font-size: 12px; max-width: 360px; white-space: nowrap; overflow: hidden; }
+.hq-composer__suggest:hover { background: var(--amber-glow); }
+.hq-composer__suggestname { flex: none; font-weight: 600; }
+/* O motivo encolhe com reticências (antes era cortado no meio da palavra, sem "…"). */
+.hq-composer__suggestwhy { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.hq-composer__who { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; white-space: nowrap; }
+.hq-composer__run { font-weight: 600; }
+
+/* Ações sempre juntas, à direita do pedido (antes quebravam de linha e "Executar tarefa" ficava sozinho embaixo). */
+.hq-composer__actions { flex: none; display: flex; align-items: center; gap: 8px; padding-top: 3px; }
+.hq-composer__options { position: relative; }
+/* Abre para cima e alinhado à direita do botão; nunca passa da largura da janela. */
+.hq-composer__popover { position: absolute; right: 0; bottom: calc(100% + 8px); width: 380px; max-width: calc(100vw - 24px); max-height: calc(100vh - 120px); overflow: auto; background: var(--bg-elev); border: 1px solid var(--border-strong); border-radius: 10px; box-shadow: var(--shadow); padding: 12px; display: flex; flex-direction: column; gap: 10px; z-index: 40; }
+.hq-composer__popover .hq-field { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; }
+.hq-composer__popover .hq-field > span { color: var(--text-dim); font-size: 11.5px; }
+.hq-composer__popnote { margin: 0; font-size: 12px; line-height: 1.4; }
+.hq-composer__popfoot { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; font-size: 11.5px; line-height: 1.4; }
+
+.hq-composer__row--info { font-size: 12px; min-height: 16px; gap: 12px; }
+.hq-composer__row--info:empty { display: none; }
+.hq-composer__skillinfo { color: var(--text-dim); }
+.hq-composer__skillinfo strong { color: var(--text); }
+.hq-composer__skillinfo--bad { color: var(--warn); }
+.hq-composer__missing { color: var(--warn); }
+.hq-composer__bad { color: var(--danger); }
+.hq-composer__bad .hq-linkbtn { margin-left: 4px; }
+
+.hq-composer__result { border: 1px solid rgba(124, 196, 127, 0.45); border-left: 3px solid var(--ok); border-radius: 8px; padding: 8px 10px; background: rgba(124, 196, 127, 0.06); display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; }
+.hq-composer__result--dup { border-color: rgba(232, 184, 74, 0.5); border-left-color: var(--warn); background: rgba(232, 184, 74, 0.06); }
+.hq-composer__resulthead { display: flex; align-items: center; gap: 8px; }
+.hq-composer__dismiss { margin-left: auto; width: 24px; height: 24px; }
+.hq-composer__resultbody { line-height: 1.45; }
+.hq-composer__resultbody strong { color: var(--text); }
+.hq-composer__notes { margin: 0; padding-left: 18px; color: var(--warn); font-size: 12px; }
+.hq-composer__resultfoot { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.hq-composer__applied { font-size: 11.5px; }
+
+@media (max-width: 1400px) {
+  .hq-composer__select { max-width: 190px; min-width: 130px; }
+  .hq-composer__field--skill .hq-composer__select { max-width: 210px; }
+  .hq-composer__suggest { max-width: 260px; }
+  .hq-composer__skillsearch { width: 120px; }
+}
+
+/* Primeiro uso (três passos) e "Enquanto você esteve fora". */
+.hq-onboard { list-style: none; margin: 12px 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.hq-onboard__step { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-elev); }
+.hq-onboard__step--done { border-color: rgba(124, 196, 127, 0.45); }
+.hq-onboard__num { flex: none; width: 26px; height: 26px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; background: var(--border); color: var(--text); font-weight: 700; font-size: 12.5px; }
+.hq-onboard__step--done .hq-onboard__num { background: rgba(124, 196, 127, 0.25); color: var(--ok); }
+.hq-onboard__body { flex: 1; display: flex; flex-direction: column; gap: 2px; font-size: 13px; min-width: 0; }
+.hq-onboard__body .hq-dim { font-size: 12px; }
+.hq-away__section { margin-top: 12px; }
+.hq-away__title { font-size: 12.5px; margin: 0 0 6px; display: flex; align-items: center; gap: 6px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.4px; }
+.hq-away__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.hq-away__item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 12.5px; }
+.hq-away__text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Marco 1: rótulo com a configuração em vigor, Ultracode separado, contexto por referência e configuração pedida x confirmada. */
+.hq-composer__cfg { display: inline-block; max-width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+.hq-composer__ultra { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; line-height: 1.4; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-panel); }
+.hq-composer__ultra--off { opacity: 0.7; }
+.hq-composer__ultra input { margin-top: 3px; }
+.hq-composer__context { display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; min-width: 0; max-width: 420px; }
+.hq-composer__ctxchip { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; max-width: 160px; }
+.hq-composer__ctxchip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hq-composer__ctxx { background: none; border: none; color: var(--text-dim); cursor: pointer; padding: 0 2px; font-size: 13px; line-height: 1; }
+.hq-composer__ctxx:hover { color: var(--danger); }
+.hq-composer__ctxadd { font-size: 12px; white-space: nowrap; }
+.hq-composer__applied { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.hq-cfgline { font-size: 11.5px; color: var(--text-dim); }
+.hq-cfgline strong { color: var(--text); font-weight: 600; }
+.hq-cfgline em { font-style: normal; }
+.hq-cfgline--ok em { color: var(--ok); }
+.hq-cfgline--warn em { color: var(--warn); }
+.hq-cfgline--dim em { color: var(--text-faint); }
+
+/* Com o painel lateral em altura total, a barra de baixo fica mais estreita: o campo do pedido nunca encolhe abaixo de um
+   tamanho legível; quem executa, perfil e Executar descem para a linha seguinte quando não cabem (10/11/2026). */
+.hq-composer__row--text { flex-wrap: wrap; }
+.hq-composer__text { flex: 1 1 300px; min-width: 260px; }

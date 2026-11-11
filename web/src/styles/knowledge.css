@@ -1,0 +1,46 @@
+/* Conhecimento da equipe (10/11/2026): área dentro da Equipe, cartão de entrega com conferência e leitura do pedido. */
+.hq-know { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.hq-know__lead { margin: 0; max-width: 78ch; }
+.hq-know__tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.hq-know__teach { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-elev); }
+.hq-know__row { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
+.hq-know__row .hq-field { display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; color: var(--text-dim); }
+.hq-know__ref { flex: 1 1 220px; }
+.hq-know__ok { color: var(--ok); margin: 0; font-size: 12.5px; }
+.hq-know__conflict { display: flex; flex-direction: column; gap: 6px; padding: 8px 10px; border: 1px solid var(--warn); border-radius: 8px; font-size: 12.5px; }
+.hq-know__conflictrow { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+.hq-know__filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.hq-know__search { flex: 1 1 180px; min-width: 140px; }
+.hq-know__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 10px; }
+.hq-know__card { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border: 1px solid var(--border); border-left: 3px solid var(--amber); border-radius: var(--radius); background: var(--bg-elev); font-size: 12.5px; min-width: 0; }
+.hq-know__card--proposto { border-style: dashed; border-left-style: solid; border-left-color: var(--lavender); }
+.hq-know__card--desativado { border-left-color: var(--border-strong); opacity: 0.75; }
+.hq-know__head { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.hq-know__when { margin-left: auto; font-size: 11px; }
+.hq-know__st { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+.hq-know__st--ativo { color: var(--ok); }
+.hq-know__st--proposto { color: #7a5fc2; }
+.hq-know__st--desativado, .hq-know__st--substituido { color: var(--text-dim); }
+.hq-know__kind--preferencia { background: var(--amber); color: #1a1408; }
+.hq-know__kind--sugestao, .hq-know__kind--exemplo { background: var(--lavender-soft); color: #4a3a82; }
+.hq-know__text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; color: var(--text); }
+.hq-know__origin { margin: 0; font-size: 11.5px; overflow-wrap: anywhere; }
+.hq-know__ev { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 11.5px; }
+.hq-know__edit { display: flex; flex-direction: column; gap: 6px; }
+.hq-know__uses ul { margin: 6px 0 0; padding-left: 16px; display: flex; flex-direction: column; gap: 3px; }
+.hq-know__older { color: var(--text-dim); }
+.hq-know__people h3 { margin: 6px 0 2px; font-size: 14px; }
+.hq-know__people p { margin: 0 0 8px; }
+
+.hq-know-captured { position: fixed; left: 50%; transform: translateX(-50%); bottom: 96px; z-index: 60; max-width: min(720px, calc(100vw - 32px)); display: flex; gap: 12px; align-items: center; padding: 10px 14px; border: 1px solid var(--amber); border-radius: 12px; background: var(--bg-elev); box-shadow: 0 8px 28px rgba(60, 40, 10, 0.18); font-size: 12.5px; }
+.hq-know-captured .hq-actions { flex-shrink: 0; }
+
+.hq-desk__summary { margin: 0 0 10px; padding: 8px 10px; border-radius: 8px; background: var(--lavender-soft); color: var(--text); font-size: 12.5px; }
+.hq-desk__remember { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; color: var(--text-dim); }
+.hq-desk__req { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hq-desk__st--incompleta { color: var(--danger); }
+
+.hq-composer__reading { color: var(--text-dim); }
+.hq-composer__reading strong { color: var(--text); }
+.hq-composer__ok { color: var(--ok); }
+.hq-btn--danger { border-color: var(--danger); color: var(--danger); }

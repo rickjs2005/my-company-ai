@@ -1,0 +1,12 @@
+{
+  "name": "@milweb-hq/protocol",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Contrato compartilhado (domínio + mensagens WebSocket) da MilWeb HQ",
+  "main": "./src/index.ts",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc --noEmit" },
+  "dependencies": { "@milweb-hq/claude-bridge": "workspace:*" },
+  "devDependencies": { "@types/node": "^24.0.0", "typescript": "^5.9.0" }
+}

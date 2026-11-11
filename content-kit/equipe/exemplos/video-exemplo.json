@@ -1,0 +1,38 @@
+{
+  "composicao": "CenasReel",
+  "marca": "tuco-dev",
+  "titulo": "O que acontece quando a página carrega os produtos",
+  "capa": { "cena": "caminho" },
+  "audio": { "trilha": "gerada", "sfx": true, "voz": null, "provisorio": false, "observacao": "exemplo do contrato: trilha e efeitos gerados pela HQ" },
+  "cenas": [
+    {
+      "id": "abertura", "tipo": "titulo", "duracao": 2.4,
+      "mostra": "a pergunta em letras grandes sobre o papel de caderno", "acao": "as palavras entram uma a uma e o ícone do navegador pula ao lado", "informacao": "o vídeo vai explicar o caminho de um pedido", "transicao": "o ícone do navegador desliza para a esquerda e vira o primeiro nó do diagrama",
+      "texto": "Você clicou. E agora?", "subtexto": "o caminho de um pedido na web", "icones": ["navegador"]
+    },
+    {
+      "id": "caminho", "tipo": "diagrama", "duracao": 5.5,
+      "mostra": "navegador, API e banco de dados ligados por setas", "acao": "os nós entram, as setas se desenham e um pacote vai do navegador até o banco e volta como resposta", "informacao": "o navegador não fala direto com o banco: a API faz o meio de campo", "transicao": "a resposta chega no navegador e a câmera entra no código que fez o pedido",
+      "titulo": "Pedido e resposta",
+      "nos": [ { "id": "nav", "rotulo": "Navegador", "simbolo": "navegador" }, { "id": "api", "rotulo": "API", "simbolo": "api" }, { "id": "db", "rotulo": "Banco", "simbolo": "banco" } ],
+      "fluxo": [ { "de": "nav", "para": "api", "rotulo": "GET /api/produtos" }, { "de": "api", "para": "db", "rotulo": "consulta" }, { "de": "db", "para": "api", "rotulo": "3 linhas" }, { "de": "api", "para": "nav", "rotulo": "200 + JSON" } ]
+    },
+    {
+      "id": "codigo", "tipo": "codigo", "duracao": 6,
+      "mostra": "editor com quatro linhas e o terminal embaixo", "acao": "o código é digitado, roda e a saída aparece com um check verde", "informacao": "o mesmo caminho em código, com a saída que esse código produz de verdade", "transicao": "a saída vira a lista de produtos na interface",
+      "arquivo": "pedido.js",
+      "linhas": [ "const pedido = { metodo: 'GET', rota: '/api/produtos' };", "const resposta = { status: 200, itens: 3 };", "console.log(`${pedido.metodo} ${pedido.rota} -> ${resposta.status}`);", "console.log(`${resposta.itens} produtos na tela`);" ],
+      "saida": "GET /api/produtos -> 200\n3 produtos na tela", "sucesso": true
+    },
+    {
+      "id": "tela", "tipo": "interface", "duracao": 4,
+      "mostra": "uma loja simples com o botão Carregar produtos", "acao": "o cursor vai até o botão, clica e três cartões de produto aparecem", "informacao": "é isso que a pessoa vê enquanto tudo aquilo acontece", "transicao": "a tela esvazia para o fechamento",
+      "titulo": "Loja", "elementos": ["Início", "Carregar produtos", "Carrinho"], "clique": 1, "resultado": "3 produtos carregados"
+    },
+    {
+      "id": "fim", "tipo": "encerramento", "duracao": 2.6,
+      "mostra": "a frase final e a assinatura", "acao": "a frase entra e a assinatura sobe", "informacao": "resumo em uma frase e convite",
+      "texto": "Um clique, três viagens.", "cta": "Quer o próximo: o que é um banco de dados?", "assinatura": "@tucoexemplo"
+    }
+  ]
+}

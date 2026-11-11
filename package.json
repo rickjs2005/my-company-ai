@@ -1,0 +1,15 @@
+{
+  "name": "milweb-hq",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MilWeb HQ: empresa virtual em pixel art que dirige o Claude Code real instalado no computador",
+  "packageManager": "pnpm@10.33.4",
+  "scripts": {
+    "start": "pnpm --filter @milweb-hq/server start -- --open --print-url",
+    "build": "pnpm --filter @milweb-hq/web build",
+    "dev:server": "cross-env-shell \"\" || set MILWEB_HQ_DEV=1&& pnpm --filter @milweb-hq/server dev",
+    "dev:web": "pnpm --filter @milweb-hq/web dev",
+    "test": "pnpm -r --if-present test",
+    "typecheck": "pnpm -r --if-present typecheck"
+  }
+}
