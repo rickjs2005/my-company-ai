@@ -2,7 +2,7 @@
   "name": "milweb-hq",
   "version": "0.1.0",
   "private": true,
-  "description": "MilWeb HQ: empresa virtual em pixel art que dirige o Claude Code real instalado no computador",
+  "description": "My Company AI: build your own AI-powered social media company on your PC (local app that drives the real Claude Code installed on the machine)",
   "packageManager": "pnpm@10.33.4",
   "scripts": {
     "start": "pnpm --filter @milweb-hq/server start -- --open --print-url",
